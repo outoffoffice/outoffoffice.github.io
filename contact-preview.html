@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OutOff — Contact</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .wrap{position:relative; max-width:100vw; overflow-x:hidden; min-height:100vh; display:flex; flex-direction:column;}
+  /* Only the main content-col (not header/footer's, which share the same
+     class purely for width/centering) needs to grow + stay a column flex
+     container, so .content's own flex:1 below still reaches the footer. */
+  .page-body{flex:1; align-self:center; width:100%; display:flex; flex-direction:column;}
+
+  nav a.active::after{width:100%;}
+
+  .page-head{
+    position:relative; z-index:2;
+    padding:80px 40px 40px; border-bottom:1px solid var(--grid);
+  }
+  .kicker{
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--blue);
+    display:flex; align-items:center; gap:10px; margin-bottom:20px;
+  }
+  .kicker .dot{width:8px; height:8px; background:var(--lime); display:inline-block; border-radius:50%; animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.3;}}
+  h1{max-width:700px;}
+  h1 .accent{color:var(--blue);}
+  .page-sub{margin-top:22px; max-width:480px; font-size:16px; line-height:1.6; opacity:0.8;}
+
+  /* ---- main content: two columns ---- */
+  .content{
+    position:relative; z-index:2;
+    flex:1;
+    display:grid; grid-template-columns:1.1fr 1fr;
+  }
+
+  /* terminal panel */
+  .terminal{
+    padding:48px 40px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .terminal-bar{
+    display:flex; align-items:center; gap:8px; margin-bottom:18px; opacity:0.5; font-size:11px;
+  }
+  .terminal-bar .req{color:var(--blue);}
+  /* portrait shot, framed like the rest of the GET response below it —
+     same rounded/shadow/placeholder language as .image-block elsewhere. */
+  .terminal-photo{
+    max-width:460px;
+    aspect-ratio:4/5;
+    margin-bottom:20px;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 20px 50px -20px rgba(21,21,26,0.25);
+    background:linear-gradient(135deg, #e9e8ef, #c0c0c4);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .terminal-photo .ph-label{
+    font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.5;
+  }
+  .terminal-photo img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  pre.response{
+    font-size:13px; line-height:1.8; white-space:pre-wrap;
+    background:rgba(21,21,26,0.03); border:1px solid var(--ink); border-radius:14px;
+    padding:20px 22px; max-width:460px;
+  }
+  .k{opacity:0.55;}
+  .v{color:var(--ink);}
+  .v.status{color:var(--blue); font-weight:700;}
+
+  /* contact actions */
+  .actions{
+    padding:48px 40px;
+    display:flex; flex-direction:column; justify-content:flex-start; gap:36px;
+  }
+  .copy-block .label{
+    font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.55;
+    text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;
+  }
+  .copy-btn{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    width:100%; max-width:460px;
+    border:1px solid var(--ink); border-radius:999px; background:transparent;
+    padding:20px 26px; cursor:pointer; text-align:left;
+    transition:background 0.2s ease;
+  }
+  .copy-btn:hover{background:rgba(21,21,26,0.04);}
+  .copy-btn .email{
+    font-family:'Montserrat', sans-serif; font-weight:900; font-size:clamp(17px, 2vw, 22px); letter-spacing:-0.01em;
+    word-break:break-all;
+  }
+  .copy-btn .hint{
+    font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.5; white-space:nowrap;
+    flex-shrink:0;
+  }
+  .copy-btn.copied{background:var(--lime); border-color:var(--ink);}
+  .copy-btn.copied .hint{opacity:1; font-weight:700;}
+
+  .endpoints{max-width:460px;}
+  .endpoints .label{
+    font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.55;
+    text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;
+  }
+  .endpoint-list{border-top:1px solid var(--grid);}
+  .endpoint{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 2px; border-bottom:1px solid var(--grid);
+    text-decoration:none; color:var(--ink);
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+  }
+  .endpoint .method{color:var(--blue); margin-right:10px;}
+  .endpoint .arrow{opacity:0; transition:opacity 0.2s ease, transform 0.2s ease; transform:translateX(-4px);}
+  .endpoint:hover .arrow{opacity:1; transform:translateX(0);}
+
+  footer.strip{margin-top:auto;}
+  .footer-inner{opacity:0.6; display:flex; justify-content:space-between;}
+
+  @media (max-width:860px){
+    .content{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="grid-bg"></div>
+
+  <header>
+    <div class="header-inner content-col">
+      <div class="logo"><span class="brand">OutOff</span><span class="us">_</span><span class="signature">Derek Milai Kunstmann, Creative Technologist</span></div>
+      <nav>
+        <a href="#">work</a>
+        <a href="#">lab</a>
+        <a href="#" class="active">contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="viewport-readout" id="viewport-readout">viewport: —</div>
+  <div class="coords" id="coords">x: 000 / y: 000</div>
+
+  <div class="content-col page-body">
+  <section class="page-head">
+    <div class="kicker"><span class="dot"></span>status: available for new work</div>
+    <h1>Let's build <span class="accent">something.</span></h1>
+    <p class="page-sub">Open for freelance collaborations, technical consulting, and the occasional weird lab experiment. Fastest way in is below.</p>
+  </section>
+
+  <div class="content">
+    <div class="terminal">
+      <div class="terminal-bar"><span class="req">GET</span> /outoff/contact</div>
+      <div class="terminal-photo">
+        <span class="ph-label">[ derek.jpg — 800×1000 ]</span>
+      </div>
+      <pre class="response">{
+  <span class="k">"status":</span> <span class="v status">"available"</span>,
+  <span class="k">"based_in":</span> <span class="v">"Ratisbona, DE"</span>,
+  <span class="k">"local_time":</span> <span class="v" id="local-time">--:--</span>,
+  <span class="k">"response_time":</span> <span class="v">"&lt; 24h"</span>,
+  <span class="k">"uptime":</span> <span class="v" id="uptime">-- days</span>
+}</pre>
+    </div>
+
+    <div class="actions">
+      <div class="copy-block">
+        <div class="label">Primary channel</div>
+        <button class="copy-btn" id="copyBtn">
+          <span class="email">hello@outoff.dev</span>
+          <span class="hint" id="copyHint">click to copy →</span>
+        </button>
+      </div>
+
+      <div class="endpoints">
+        <div class="label">Elsewhere</div>
+        <div class="endpoint-list">
+          <a href="#" class="endpoint"><span><span class="method">GET</span>/linkedin</span><span class="arrow">→</span></a>
+          <a href="#" class="endpoint"><span><span class="method">GET</span>/instagram</span><span class="arrow">→</span></a>
+          <a href="#" class="endpoint"><span><span class="method">GET</span>/github</span><span class="arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <footer class="strip">
+    <div class="footer-inner content-col">
+      <span>OutOff — Derek Milai Kunstmann — © 2026</span>
+      <span id="visitor-loc">locating visitor…</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const coords = document.getElementById('coords');
+  document.addEventListener('mousemove', (e) => {
+    coords.textContent = `x: ${String(e.clientX).padStart(3,'0')} / y: ${String(e.clientY).padStart(3,'0')}`;
+  });
+
+  const viewportReadout = document.getElementById('viewport-readout');
+  function renderViewport(){
+    viewportReadout.textContent = `viewport: ${window.innerWidth}×${window.innerHeight}`;
+  }
+  window.addEventListener('resize', renderViewport);
+  renderViewport();
+
+  // live local time (Europe/Berlin, matches "Ratisbona")
+  function renderTime(){
+    const t = new Date().toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' });
+    document.getElementById('local-time').textContent = `"${t}"`;
+  }
+  renderTime();
+  setInterval(renderTime, 15000);
+
+  // uptime counter since a founding date
+  const founded = new Date('2021-01-01T00:00:00Z');
+  function renderUptime(){
+    const days = Math.floor((Date.now() - founded.getTime()) / 86400000);
+    document.getElementById('uptime').textContent = `"${days} days"`;
+  }
+  renderUptime();
+
+  // copy email to clipboard
+  const copyBtn = document.getElementById('copyBtn');
+  const copyHint = document.getElementById('copyHint');
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText('hello@outoff.dev').then(() => {
+      copyBtn.classList.add('copied');
+      copyHint.textContent = 'copied ✓';
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        copyHint.textContent = 'click to copy →';
+      }, 2000);
+    });
+  });
+
+  // visitor location, consistent with other pages
+  const visitorLoc = document.getElementById('visitor-loc');
+  fetch('https://ipapi.co/json/')
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.city) {
+        const lat = Number(data.latitude).toFixed(2);
+        const lon = Number(data.longitude).toFixed(2);
+        visitorLoc.textContent = `visiting from ${data.city}, ${data.country_name} — ${lat}°, ${lon}°`;
+      } else {
+        visitorLoc.textContent = 'visitor location unavailable';
+      }
+    })
+    .catch(() => {
+      visitorLoc.textContent = 'visitor location unavailable';
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+node_modules/
+_site/
+.DS_Store
+
+# private feedback recordings, not site content
+commetns/
+
+# heavy PSD source files — keep only the exported PNG/JPG on the site
+*.psd

@@ -1,0 +1,49 @@
+/* Image layout blocks for the free-form case-study body — used by the
+   imageSingle / imagePair / imageTrio shortcodes. Same visual language as
+   the current .image-pair .ph tiles: 14px radius, soft shadow, diagonal
+   placeholder gradient when no real image exists yet. */
+
+.image-block{margin:32px 0;}
+.image-block .ph-grid{display:grid; gap:16px;}
+.image-block.single .ph-grid{grid-template-columns:1fr;}
+.image-block.pair .ph-grid{grid-template-columns:1fr 1fr;}
+.image-block.trio .ph-grid{grid-template-columns:1fr 1fr 1fr;}
+
+.image-block .ph{
+  position:relative;
+  aspect-ratio:4/3;
+  background:linear-gradient(135deg, #e9e8ef, #c0c0c4);
+  border-radius:14px;
+  box-shadow:0 20px 50px -20px rgba(21,21,26,0.25);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+.image-block.single .ph{aspect-ratio:16/9;}
+
+.image-block .ph-label{
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  opacity:0.5;
+  z-index:1;
+  position:relative;
+}
+.image-block .ph img{
+  position:absolute;
+  inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  z-index:2;
+}
+
+.image-block .ph-caption{
+  margin-top:8px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:11.5px;
+  opacity:0.55;
+  text-align:center;
+}
+
+@media (max-width: 720px){
+  .image-block.pair .ph-grid,
+  .image-block.trio .ph-grid{grid-template-columns:1fr;}
+}
