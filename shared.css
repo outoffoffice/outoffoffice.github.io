@@ -1,0 +1,170 @@
+/* OutOff — shared design tokens & structural components.
+   Consolidated out of portfolio-preview.html / beyond-the-engine.html /
+   work-index-preview 3.html / contact-preview.html — nothing added here is
+   new, this is exactly what those pages already had duplicated verbatim.
+   Page-specific layout (hero, sections, cards, terminal, etc.) stays in
+   each page's own <style> block, loaded after this file so it can still
+   add small local overrides (e.g. h1 max-width, footer margin-top:auto). */
+
+:root{
+  --paper:#e9e8ef;
+  --ink:#15151a;
+  --blue:#2b4eff;
+  --lime:#bfff00;
+  --grid:#c9c6bc;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{background:var(--paper); color:var(--ink); font-family:'Inter',sans-serif; overflow-x:hidden; width:100%; cursor:default;}
+
+/* ---- content column: header/footer stay full-bleed edge-to-edge (they're
+   siblings of this, outside it); everything else — hero, sections, cards,
+   dividers between them — shares this one centered max-width, so section
+   borders never end up inset differently from page to page. ---- */
+.content-col{position:relative; max-width:1440px; margin:0 auto;}
+
+/* ---- grain overlay (e-ink style noise, identical on every page) ---- */
+.grid-bg{
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+  opacity:0.16;
+}
+
+/* ---- header ----
+   header itself only carries the full-width border line; .header-inner
+   (also classed .content-col in markup) holds the padding/flex layout and
+   caps+aligns with wherever the page's main content sits. ---- */
+header{
+  position:relative; z-index:2;
+  border-bottom:1px solid var(--ink);
+}
+.header-inner{
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px 20px;
+  padding:22px 40px;
+}
+.logo{
+  font-family:'JetBrains Mono', monospace; font-weight:500; font-size:14px;
+  letter-spacing:0.02em; line-height:1.5; min-width:0;
+}
+.logo .brand{
+  font-family:'Montserrat', sans-serif; font-weight:900; font-size:17px; letter-spacing:-0.01em;
+  display:inline-block; transform:skewX(-8deg);
+}
+.logo .us{color:var(--blue); display:inline-block; transform:skewX(-8deg);}
+.logo .signature{display:block; font-size:11px; font-weight:400; opacity:0.6; letter-spacing:0.01em;}
+nav{display:flex; gap:28px; font-family:'JetBrains Mono', monospace; font-size:13px; flex-wrap:wrap;}
+nav a{color:var(--ink); text-decoration:none; position:relative;}
+nav a::after{content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px; background:var(--lime); transition:width 0.25s ease;}
+nav a:hover::after, nav a.active::after{width:100%;}
+.back{
+  font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--ink);
+  text-decoration:none; display:flex; align-items:center; gap:8px;
+}
+.back:hover{color:var(--blue);}
+
+@media (max-width: 560px){
+  .header-inner{padding:18px 20px; gap:10px 16px;}
+  .logo .signature{font-size:10px;}
+  nav{gap:18px; font-size:12px;}
+}
+
+/* ---- coords / viewport readout ----
+   Positioned against .wrap (full width) but the left/right offset tracks
+   wherever .content-col's edge actually is — same 40px inset as the page
+   content when narrower than the max-width, growing with the centering
+   gutter once the window passes 1440px. Matches .content-col's default
+   (centered) math; the homepage overrides this locally since its content
+   stays left-aligned instead. ---- */
+.coords{
+  position:absolute; top:110px; z-index:3;
+  right: max(40px, calc((100% - 1440px) / 2 + 40px));
+  font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink);
+  opacity:0.5; text-align:right; line-height:1.6;
+  display:none;
+}
+.viewport-readout{
+  position:absolute; top:110px; z-index:3;
+  left: max(40px, calc((100% - 1440px) / 2 + 40px));
+  font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink);
+  opacity:0.5; text-align:left; line-height:1.6;
+  display:none;
+}
+@media (min-width: 800px){
+  .coords{display:block;}
+  .viewport-readout{display:block;}
+}
+
+/* ---- big heading: claim / case-study / work-index / contact h1 all
+   share the same base now — pages only add their own max-width / margin
+   locally. ---- */
+h1{
+  font-family:'Montserrat', sans-serif;
+  font-weight:800;
+  font-size:clamp(38px, 6vw, 70px);
+  line-height:1.02;
+  letter-spacing:-0.015em;
+  color:#2c2c31;
+}
+
+/* ---- footer ----
+   same split as header: footer.strip only carries the full-width border
+   line; .footer-inner (also classed .content-col) holds the padding and
+   aligns with the page's main content. ---- */
+footer.strip{
+  position:relative; z-index:2;
+  font-family:'JetBrains Mono', monospace; font-size:11px;
+  border-top:1px solid var(--ink);
+}
+.footer-inner{padding:16px 40px;}
+.strip-row{
+  display:flex; justify-content:space-between; align-items:center;
+  opacity:0.6;
+}
+
+/* ---- case-study image blocks: single / pair / trio ----
+   Free-form layout pieces for case-study bodies. Diagonal gradient
+   placeholder + mono label shown until a real image is dropped in
+   (just omit the <img> and keep the .ph-label). Same 14px radius / shadow
+   language as every other image tile on the site (hero-image, card-thumb,
+   work-strip). ---- */
+.image-block{margin:32px 0;}
+.image-block .ph-grid{display:grid; gap:16px;}
+.image-block.single .ph-grid{grid-template-columns:1fr;}
+.image-block.pair .ph-grid{grid-template-columns:1fr 1fr;}
+.image-block.trio .ph-grid{grid-template-columns:1fr 1fr 1fr;}
+
+.image-block .ph{
+  position:relative;
+  aspect-ratio:4/3;
+  background:linear-gradient(135deg, #e9e8ef, #c0c0c4);
+  border-radius:14px;
+  box-shadow:0 20px 50px -20px rgba(21,21,26,0.25);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+.image-block.single .ph{aspect-ratio:16/9;}
+
+.image-block .ph-label{
+  font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.5; z-index:1; position:relative;
+}
+.image-block .ph img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:2;
+}
+.image-block .ph-caption{
+  margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:11.5px; opacity:0.55; text-align:center;
+}
+
+@media (max-width: 720px){
+  .image-block.pair .ph-grid, .image-block.trio .ph-grid{grid-template-columns:1fr;}
+}
+
+/* ---- tag pills (work / lab) ---- */
+.pill{
+  font-family:'JetBrains Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.04em;
+  padding:6px 11px; border-radius:999px;
+  background:rgba(233,232,239,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  display:flex; align-items:center; gap:6px;
+}
+.pill .dot{width:6px; height:6px; border-radius:50%; display:inline-block;}
+.pill.work .dot{background:var(--blue);}
+.pill.lab .dot{background:var(--lime); box-shadow:0 0 0 1px rgba(21,21,26,0.15);}
