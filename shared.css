@@ -45,6 +45,7 @@ header{
 .logo{
   font-family:'JetBrains Mono', monospace; font-weight:500; font-size:14px;
   letter-spacing:0.02em; line-height:1.5; min-width:0;
+  color:inherit; text-decoration:none;
 }
 .logo .brand{
   font-family:'Montserrat', sans-serif; font-weight:900; font-size:17px; letter-spacing:-0.01em;
