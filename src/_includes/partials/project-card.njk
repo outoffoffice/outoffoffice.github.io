@@ -1,0 +1,19 @@
+{% macro card(item, index, cat) %}
+<a class="card{% if index % 2 == 1 %} flip{% endif %}" data-cat="{{ cat }}" href="{{ item.url }}">
+  <div class="card-thumb">
+    {% if item.data.heroImage %}<img src="/images/{{ item.data.heroImage }}" alt="{{ item.data.heroImageAlt or item.data.title }}">{% endif %}
+    <div class="card-thumb-tags">
+      <span class="pill {{ cat }}"><span class="dot"></span>{{ cat }}</span>
+    </div>
+    <div class="card-view">view case
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="var(--lime)"/><path d="M8.5 8.5L15.5 15.5M8.5 15.5L15.5 8.5" stroke="var(--ink)" stroke-width="1.5"/></svg>
+    </div>
+  </div>
+  <div class="card-body">
+    <span class="card-index">{% if index + 1 < 10 %}0{% endif %}{{ index + 1 }}</span>
+    <div class="card-title">{{ item.data.title }}</div>
+    {% if item.data.dek %}<div class="card-desc">{{ item.data.dek }}</div>{% endif %}
+    <div class="card-meta"><span>{{ item.data.timeframe }}</span><span>{{ item.data.role }}</span></div>
+  </div>
+</a>
+{% endmacro %}

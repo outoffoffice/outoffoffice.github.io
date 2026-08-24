@@ -1,6 +1,7 @@
 node_modules/
 _site/
 .DS_Store
+.claude/
 
 # private feedback recordings, not site content
 commetns/
