@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="/css/shared.css">
 <link rel="stylesheet" href="/css/image-blocks.css">
 <style>
-  .wrap{position:relative; max-width:1440px; margin:0 auto; overflow-x:hidden; min-height:100vh; display:flex; flex-direction:column;}
+  .wrap{position:relative; max-width:100vw; overflow-x:hidden; min-height:100vh; display:flex; flex-direction:column;}
   footer.strip{margin-top:auto;}
 
   /* ---- project header ---- */
@@ -109,6 +109,7 @@
   <div class="viewport-readout" id="viewport-readout">viewport: —</div>
   <div class="coords" id="coords">x: 000 / y: 000</div>
 
+  <div class="content-col">
   <section class="project-head">
     <div class="kicker">{{ kicker }}</div>
     <h1>{{ title }}</h1>
@@ -129,6 +130,7 @@
       </div>
     </div>
   </section>
+  </div>
 
   {% if heroImage %}
   <div class="hero-image">
@@ -136,6 +138,7 @@
   </div>
   {% endif %}
 
+  <div class="content-col">
   <div class="case-body">
     {{ content | safe }}
   </div>
@@ -149,6 +152,7 @@
     <a href="{{ nextProjectHref or '#' }}">view</a>
   </div>
   {% endif %}
+  </div>
 
   <footer class="strip">
     <div class="footer-inner content-col">
