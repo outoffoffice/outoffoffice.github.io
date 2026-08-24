@@ -1,0 +1,204 @@
+---
+permalink: /lab/
+title: Lab
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OutOff — Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<style>
+  .wrap{position:relative; max-width:100vw; overflow-x:hidden;}
+
+  .page-head{
+    position:relative; z-index:2;
+    padding:96px 40px 56px;
+    max-width:900px;
+    border-bottom:1px solid var(--ink);
+  }
+  .kicker{
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--blue);
+    display:flex; align-items:center; gap:10px; margin-bottom:24px;
+  }
+  .kicker::before{content:''; width:8px; height:8px; background:var(--lime); border-radius:50%; display:inline-block;}
+  h1{margin-bottom:20px;}
+  .lede{font-size:17px; line-height:1.6; opacity:0.65; max-width:56ch;}
+
+  .project-stack{
+    position:relative; z-index:2;
+    display:flex; flex-direction:column;
+    padding:8px 0 40px;
+  }
+
+  .empty-state{
+    padding:56px 40px; font-family:'JetBrains Mono', monospace; font-size:14px; opacity:0.55;
+  }
+
+  .card{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px; align-items:center;
+    padding:56px 40px; border-bottom:1px solid var(--grid);
+    text-decoration:none; color:var(--ink);
+  }
+  .card:last-child{border-bottom:none;}
+  .card.flip{grid-template-columns:0.9fr 1.1fr;}
+  .card.flip .card-thumb{order:2;}
+  .card.flip .card-body{order:1;}
+
+  .card-thumb{
+    position:relative; overflow:hidden; aspect-ratio:4/3;
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding:14px;
+    border-radius:14px;
+    background:linear-gradient(135deg, #e9e8ef, #c0c0c4);
+    box-shadow:0 20px 50px -20px rgba(21,21,26,0.25);
+    transition:box-shadow 0.35s ease, transform 0.15s ease-out;
+  }
+  @media (hover:hover){
+    .card:hover .card-thumb{box-shadow:0 28px 60px -18px rgba(21,21,26,0.3);}
+  }
+  .card-thumb img{position:absolute; inset:0; z-index:0; width:100%; height:100%; object-fit:cover;}
+
+  .card-thumb-tags{
+    position:relative; z-index:1;
+    display:flex; flex-wrap:wrap; gap:6px;
+  }
+
+  .card-view{
+    position:relative; z-index:1;
+    align-self:flex-end;
+    display:flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace; font-size:11px;
+    background:var(--ink); color:var(--paper);
+    padding:8px 8px 8px 14px; border-radius:999px;
+  }
+  @media (hover:hover){
+    .card-view{opacity:0; transform:translateY(6px); transition:opacity 0.25s ease, transform 0.25s ease;}
+    .card:hover .card-view{opacity:1; transform:translateY(0);}
+  }
+  .card-view svg{width:18px; height:18px; flex-shrink:0;}
+
+  .card-body{display:flex; flex-direction:column; gap:10px;}
+  .card-index{font-family:'JetBrains Mono', monospace; font-size:12px; opacity:0.45;}
+  .card-title{font-family:'Inter', sans-serif; font-weight:500; font-size:27px; letter-spacing:-0.01em; line-height:1.2; color:var(--ink);}
+  .card-desc{font-size:14.5px; line-height:1.6; opacity:0.68; max-width:44ch;}
+  .card-meta{
+    font-family:'Inter', sans-serif; font-size:14px; font-weight:400; opacity:0.55;
+    display:flex; gap:16px; margin-top:2px;
+  }
+
+  @media (max-width: 860px){
+    .card, .card.flip{grid-template-columns:1fr; gap:20px;}
+    .card.flip .card-thumb{order:1;}
+    .card.flip .card-body{order:2;}
+    .card{padding:36px 40px;}
+  }
+
+  @media (max-width: 560px){
+    .page-head{padding:56px 20px 40px;}
+    h1{font-size:clamp(32px, 10vw, 44px);}
+    .project-stack{padding:8px 0 32px;}
+    .card{padding:36px 20px;}
+    .card-title{font-size:22px;}
+    .card-view{padding:7px 7px 7px 12px; font-size:10.5px;}
+    .footer-inner{padding:16px 20px;}
+    .strip-row{flex-wrap:wrap; gap:6px 12px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="grid-bg"></div>
+
+  <header>
+    <div class="header-inner content-col">
+      <div class="logo"><span class="brand">OutOff</span><span class="us">_</span><span class="signature">Derek Milai, Creative Technologist</span></div>
+      {% include "partials/nav.njk" %}
+    </div>
+  </header>
+
+  <div class="viewport-readout" id="viewport-readout">viewport: —</div>
+  <div class="coords" id="coords">x: 000 / y: 000</div>
+
+  <div class="content-col">
+  <section class="page-head">
+    <div class="kicker">lab — {{ collections.lab.length }} experiment{% if collections.lab.length != 1 %}s{% endif %}</div>
+    <h1>Loose ends & experiments.</h1>
+    <p class="lede">Weekend-scale prototypes and exploratory builds — less polished, more testing what's possible.</p>
+  </section>
+
+  <div class="project-stack">
+    {% from "partials/project-card.njk" import card %}
+    {% for item in collections.lab %}
+      {{ card(item, loop.index0, "lab") }}
+    {% else %}
+      <p class="empty-state">No lab experiments published yet — check back soon.</p>
+    {% endfor %}
+  </div>
+  </div>
+
+  <footer class="strip">
+    <div class="footer-inner content-col">
+      <div class="strip-row">
+        <span>OutOff — Derek Milai — © 2026</span>
+        <span id="visitor-loc">locating visitor…</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const coords = document.getElementById('coords');
+  document.addEventListener('mousemove', (e) => {
+    coords.textContent = `x: ${String(e.clientX).padStart(3,'0')} / y: ${String(e.clientY).padStart(3,'0')}`;
+  });
+
+  const viewportReadout = document.getElementById('viewport-readout');
+  function renderViewport(){
+    viewportReadout.textContent = `viewport: ${window.innerWidth}×${window.innerHeight}`;
+  }
+  window.addEventListener('resize', renderViewport);
+  renderViewport();
+
+  const visitorLoc = document.getElementById('visitor-loc');
+  fetch('https://ipapi.co/json/')
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.city) {
+        const lat = Number(data.latitude).toFixed(2);
+        const lon = Number(data.longitude).toFixed(2);
+        visitorLoc.textContent = `visiting from ${data.city}, ${data.country_name} — ${lat}°, ${lon}°`;
+      } else {
+        visitorLoc.textContent = 'visitor location unavailable';
+      }
+    })
+    .catch(() => {
+      visitorLoc.textContent = 'visitor location unavailable';
+    });
+
+  function applyMagnetic(el, radius, maxOffset) {
+    document.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      if (dist < radius) {
+        const pull = (1 - dist / radius) * maxOffset;
+        const angle = Math.atan2(dy, dx);
+        el.style.transform = `translate(${(Math.cos(angle) * pull).toFixed(2)}px, ${(Math.sin(angle) * pull).toFixed(2)}px)`;
+      } else {
+        el.style.transform = '';
+      }
+    });
+  }
+
+  document.querySelectorAll('.card-thumb').forEach(thumb => applyMagnetic(thumb, 85, 7));
+</script>
+</body>
+</html>

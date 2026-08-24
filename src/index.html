@@ -100,6 +100,7 @@
     margin-top:56px; display:inline-flex; align-items:center; gap:12px;
     font-family:'JetBrains Mono', monospace; font-size:13px;
     padding:14px 22px; border:1px solid var(--ink); border-radius:999px; background:transparent;
+    color:var(--ink); text-decoration:none;
     cursor:pointer; transition:background 0.2s ease, color 0.2s ease, transform 0.15s ease-out;
   }
   .cta:hover{background:var(--ink); color:var(--paper);}
@@ -116,11 +117,7 @@
   <header>
     <div class="header-inner content-col">
       <div class="logo"><span class="brand">OutOff</span><span class="us">_</span><span class="signature">Derek Milai , Creative Technologist</span></div>
-      <nav>
-        <a href="#">work</a>
-        <a href="#">lab</a>
-        <a href="#">contact</a>
-      </nav>
+      {% include "partials/nav.njk" %}
     </div>
   </header>
 
@@ -160,7 +157,7 @@
       </div>
     </div>
 
-    <button class="cta">View work <span class="arrow">→</span></button>
+    <a href="/work/" class="cta">View work <span class="arrow">→</span></a>
   </section>
   </div>
   <footer class="strip">
