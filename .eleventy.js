@@ -51,6 +51,14 @@ module.exports = function (eleventyConfig) {
     return renderBlock("trio", [{ src: a }, { src: b }, { src: c }]);
   });
 
+  // Homepage work-strip carousel: any case study with `featured: true` in
+  // its front matter, in the order they were added.
+  eleventyConfig.addCollection("featured", function (collectionApi) {
+    return collectionApi.getFilteredByGlob("src/case-studies/*.md").filter(
+      (item) => item.data.featured
+    );
+  });
+
   // Reuse the real site CSS and images directly, no duplicated copies.
   eleventyConfig.addPassthroughCopy({ "shared.css": "css/shared.css" });
   eleventyConfig.addPassthroughCopy({ "content": "images" });

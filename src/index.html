@@ -130,17 +130,15 @@
     <h1>Crafting Human–Machine <span class="mark"><span class="mark-real">Understanding</span><span class="mark-scramble" aria-hidden="true"></span></span> through <span class="accent">Applied Technology.</span></h1>
     <p class="hero-sub">I'm Derek — creative technologist and designer, working under the name OutOff. I'm fascinated by the seam between human and machine: the point where analog intention turns into digital response. My focus as a designer sits exactly there.</p>
 
+    {% if collections.featured.length %}
     <div class="work-strip" id="workStrip">
-      <img class="is-active" src="/images/hmi_hero.png" alt="Beyond the Engine">
-      <img src="/images/clo-pipeline-hero.jpg" alt="CLO Pattern Pipeline">
-      <img src="/images/blender-device-hero.jpg" alt="Blender Device">
-      <img src="/images/ARC_vibe_scan.png" alt="Arc">
-      <img src="/images/case-05-hero.jpg" alt="Fifth case study">
-      <div class="work-label" id="workLabel">Beyond the Engine</div>
+      {% for item in collections.featured %}<img{% if loop.first %} class="is-active"{% endif %} src="/images/{{ item.data.heroImage }}" alt="{{ item.data.heroImageAlt or item.data.title }}" data-label="{{ item.data.title }}">{% endfor %}
+      <div class="work-label" id="workLabel">{{ collections.featured[0].data.title }}</div>
       <div class="work-dashes" id="workDashes">
-        <span class="is-active"></span><span></span><span></span><span></span><span></span>
+        {% for item in collections.featured %}<span{% if loop.first %} class="is-active"{% endif %}></span>{% endfor %}
       </div>
     </div>
+    {% endif %}
 
     <div class="hero-meta">
       <div class="meta-item">
@@ -190,7 +188,7 @@
   const workImages = document.querySelectorAll('#workStrip img');
   const workDashes = document.querySelectorAll('#workDashes span');
   const workLabel = document.getElementById('workLabel');
-  const labels = ['Beyond the Engine', 'CLO — Pattern Pipeline', 'Blender Device', 'Arc', '[Fifth case study]'];
+  const labels = Array.from(workImages).map(img => img.dataset.label);
   let workIndex = 0;
 
   function showWork(i){
