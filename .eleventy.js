@@ -60,9 +60,28 @@ module.exports = function (eleventyConfig) {
   });
 
   // Reuse the real site CSS and images directly, no duplicated copies.
+  // Passthrough of a directory always copies it verbatim (Eleventy's glob
+  // remapping flattens subfolders, so per-extension globs aren't an option
+  // here) — content/'s per-project subfolder structure is preserved as-is.
   eleventyConfig.addPassthroughCopy({ "shared.css": "css/shared.css" });
   eleventyConfig.addPassthroughCopy({ "content": "images" });
   eleventyConfig.addPassthroughCopy("src/css");
+
+  // content/ also holds .psd source files (36-38MB each, gitignored) that
+  // must never ship on the deployed site — strip them back out of the
+  // output after the directory copy above lands them there.
+  eleventyConfig.on("eleventy.after", async ({ dir }) => {
+    const imagesDir = path.join(dir.output, "images");
+    function stripPsd(currentDir) {
+      if (!fs.existsSync(currentDir)) return;
+      for (const entry of fs.readdirSync(currentDir, { withFileTypes: true })) {
+        const entryPath = path.join(currentDir, entry.name);
+        if (entry.isDirectory()) stripPsd(entryPath);
+        else if (entry.name.toLowerCase().endsWith(".psd")) fs.unlinkSync(entryPath);
+      }
+    }
+    stripPsd(imagesDir);
+  });
 
   // Let {% imageSingle %} etc. be used inside .md files.
   eleventyConfig.setLibrary("md", require("markdown-it")({ html: true }));

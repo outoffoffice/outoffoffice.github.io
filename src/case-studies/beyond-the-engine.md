@@ -9,7 +9,7 @@ dek: Interface design for the automotive world — from icons to full system log
 role: Interaction / Prototyping
 timeframe: 04/2021 – today
 stack: Figma / Protopie / VR
-heroImage: hmi_hero.png
+heroImage: carhmi/hmi_hero.png
 heroImageAlt: Project hero
 nextProjectLabel: CLO — Pattern Pipeline →
 nextProjectHref: "#"
@@ -25,7 +25,7 @@ My work in the automotive space has spanned close collaboration with major OEMs,
 
 This work spanned both pre-development and series development of system functions for driver assistance and entertainment, giving me a view into how a concept evolves from an early idea into something that actually ships. Alongside this, I contributed to research exploring new display and interaction concepts — work focused less on what already existed and more on what could come next.
 
-{% imagePair "Tabletop_Prototype.png", "VR_testing.png" %}
+{% imagePair "carhmi/Tabletop_Prototype.png", "carhmi/VR_testing.png" %}
 
 ## Small Details, Big Systems
 
