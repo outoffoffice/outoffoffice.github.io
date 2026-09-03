@@ -2,6 +2,12 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<script>
+  try {
+    var t = localStorage.getItem('theme');
+    if (t === 'dark' || t === 'grey') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portfolio — Preview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -162,6 +168,11 @@
     <div class="footer-inner content-col">
       <div class="strip-row">
         <span>OutOff — Derek Milai — © 2026</span>
+        <div class="theme-toggle" role="group" aria-label="Color mode">
+          <button type="button" data-mode="paper" aria-pressed="true">paper</button>
+          <button type="button" data-mode="dark" aria-pressed="false">dark</button>
+          <button type="button" data-mode="grey" aria-pressed="false">grey</button>
+        </div>
         <span id="visitor-loc">locating visitor…</span>
       </div>
     </div>
@@ -297,6 +308,24 @@
       }, duration / totalFrames);
     }, holdDuration);
   }
+
+  // Color-mode toggle (paper / dark / grey), synced with the anti-flash
+  // script in <head> and persisted in localStorage.
+  var themeButtons = document.querySelectorAll('.theme-toggle button');
+  function applyTheme(mode, persist) {
+    if (mode === 'paper') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', mode);
+    themeButtons.forEach(function (btn) {
+      btn.setAttribute('aria-pressed', String(btn.dataset.mode === mode));
+    });
+    if (persist) {
+      try { localStorage.setItem('theme', mode); } catch (e) {}
+    }
+  }
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'paper', false);
+  themeButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () { applyTheme(btn.dataset.mode, true); });
+  });
 </script>
 </body>
 </html>
