@@ -2,7 +2,6 @@
 layout: layouts/casestudy.njk
 permalink: /work/beyond-the-engine/
 tags: work
-featured: true
 title: Beyond the Engine
 kicker: case study — 01 / 05
 dek: Interface design for the automotive world — from icons to full system logic. Close collaboration with major OEMs, spanning concept, prototyping, and series development for driver assistance and entertainment.
@@ -11,8 +10,6 @@ timeframe: 04/2021 – today
 stack: Figma / Protopie / VR
 heroImage: carhmi/hmi_hero.png
 heroImageAlt: Project hero
-nextProjectLabel: CLO — Pattern Pipeline →
-nextProjectHref: "#"
 ---
 
 ## From Hotwheels to HMI
