@@ -44,10 +44,12 @@
   .meta-cell .label{font-size:11px; opacity:0.55; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;}
   .meta-cell .value{font-size:14px;}
 
-  /* ---- hero image ---- */
+  /* ---- hero image ----
+     width:calc(100% - 80px) matches project-head/case-body's own 40px
+     side padding, so its edges line up with the text above and below it
+     instead of bleeding to the content-col's own edge. ---- */
   .hero-image{
-    width:1600px;
-    max-width:calc(100% - 80px);
+    width:calc(100% - 80px);
     margin:40px auto 0;
     aspect-ratio:16/9;
     overflow:hidden;
@@ -130,7 +132,6 @@
       </div>
     </div>
   </section>
-  </div>
 
   {% if heroImage %}
   <div class="hero-image">
@@ -138,7 +139,6 @@
   </div>
   {% endif %}
 
-  <div class="content-col">
   <div class="case-body">
     {{ content | safe }}
   </div>
