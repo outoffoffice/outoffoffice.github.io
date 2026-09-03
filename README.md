@@ -13,11 +13,17 @@ npm run build     # Build nach _site/
 ## Struktur
 
 ```
-.eleventy.js                         Config + die 3 Bild-Shortcodes
+.eleventy.js                         Config + die 3 Bild-Shortcodes + "featured"-Collection
 src/
-  index.html                         Startseite
-  _includes/layouts/casestudy.njk    Case-Study-Layout: Header, Hero, Meta-Strip,
+  index.html                         Startseite (Work-Strip-Karussell aus collections.featured)
+  work.html                          /work/ — listet collections.work
+  lab.html                           /lab/ — listet collections.lab
+  contact.html                       /contact/
+  _includes/
+    layouts/casestudy.njk            Case-Study-Layout: Header, Hero, Meta-Strip,
                                       Footer, Magnet-Button — 1:1 aus beyond-the-engine.html
+    partials/nav.njk                 Geteilte Header-Nav mit Active-State
+    partials/project-card.njk        Karten-Macro für work.html/lab.html
   css/image-blocks.css               Styles für die 3 Shortcode-Bildlayouts
   case-studies/beyond-the-engine.md  Case-Study im freien Markdown-Format
 shared.css                           Globales Stylesheet (per Passthrough nach /css/ kopiert)
@@ -29,9 +35,9 @@ direkt aus dem Projekt-Root eingebunden (`shared.css` → `css/shared.css`,
 `content/` → `images/`).
 
 Noch nicht migriert (liegen weiter als statische HTML-Dateien im Root, bis sie
-nach und nach ins gleiche Eleventy-Schema wie `src/index.html` überführt werden):
-`work.html`, `styleguide.html`, `template.html`, `contact-preview.html`,
-`beyond-the-engine.html` (Vorgänger der migrierten `src/case-studies/beyond-the-engine.md`).
+nach und nach ins gleiche Eleventy-Schema überführt werden): `styleguide.html`,
+`template.html`, `beyond-the-engine.html` (Vorgänger der migrierten
+`src/case-studies/beyond-the-engine.md`).
 
 ## Front Matter einer Case-Study
 
@@ -39,6 +45,8 @@ nach und nach ins gleiche Eleventy-Schema wie `src/index.html` überführt werde
 ---
 layout: layouts/casestudy.njk
 permalink: /work/mein-projekt/
+tags: work                   # oder "lab" — steuert, auf welcher Seite die Case-Study auftaucht
+featured: true                # optional — nimmt sie zusätzlich ins Homepage-Karussell auf
 title: Projekt-Titel
 kicker: case study — 02 / 05
 dek: Kurzer Subtitle-Absatz unter dem H1.
@@ -55,6 +63,17 @@ nextProjectHref: /work/naechstes-projekt/
 Danach folgt frei formatierter Markdown-Body — beliebig viele `##`-Überschriften,
 jede bekommt automatisch eine dezente `--grid`-Trennlinie darüber (keine feste
 01/03-Nummerierung mehr, kein Label-Spalten-Grid).
+
+### Automatisch verlinkt, ohne manuellen Eintrag
+
+`tags: work` / `tags: lab` speist automatisch Eleventys eingebaute Tag-Collections
+(`collections.work`, `collections.lab`) — `/work/` bzw. `/lab/` loopen einfach
+darüber, kein Eintrag muss irgendwo sonst gepflegt werden. `featured: true`
+speist zusätzlich die in `.eleventy.js` definierte `featured`-Collection, aus
+der `src/index.html` das Work-Strip-Karussell auf der Startseite rendert
+(Bild, Alt-Text und Label kommen direkt aus `heroImage` / `heroImageAlt` /
+`title`). Eine neue `.md`-Datei mit diesen Feldern taucht beim nächsten Build
+also automatisch an allen drei Stellen auf — Work-/Lab-Liste und Karussell.
 
 ## Die drei Bild-Shortcodes
 
