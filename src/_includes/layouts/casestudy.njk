@@ -149,13 +149,14 @@
     {{ content | safe }}
   </div>
 
-  {% if nextProjectLabel %}
+  {% set nextItem = collections | nextInCollection(tags, page.url) %}
+  {% if nextItem %}
   <div class="next">
     <div>
       <div class="label">next project</div>
-      <h3>{{ nextProjectLabel }}</h3>
+      <h3>{{ nextItem.data.title }}</h3>
     </div>
-    <a href="{{ nextProjectHref or '#' }}">view</a>
+    <a href="{{ nextItem.url }}">view</a>
   </div>
   {% endif %}
   </div>

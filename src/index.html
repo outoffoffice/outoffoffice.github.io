@@ -136,12 +136,12 @@
     <h1>Crafting Human–Machine <span class="mark"><span class="mark-real">Understanding</span><span class="mark-scramble" aria-hidden="true"></span></span> through <span class="accent">Applied Technology.</span></h1>
     <p class="hero-sub">I'm Derek — creative technologist and designer, working under the name OutOff. I'm fascinated by the seam between human and machine: the point where analog intention turns into digital response. My focus as a designer sits exactly there.</p>
 
-    {% if collections.featured.length %}
+    {% if collections.showcase.length %}
     <div class="work-strip" id="workStrip">
-      {% for item in collections.featured %}<img{% if loop.first %} class="is-active"{% endif %} src="/images/{{ item.data.heroImage }}" alt="{{ item.data.heroImageAlt or item.data.title }}" data-label="{{ item.data.title }}">{% endfor %}
-      <div class="work-label" id="workLabel">{{ collections.featured[0].data.title }}</div>
+      {% for item in collections.showcase %}<img{% if loop.first %} class="is-active"{% endif %} src="/images/{{ item.data.heroImage }}" alt="{{ item.data.heroImageAlt or item.data.title }}" data-label="{{ item.data.title }}">{% endfor %}
+      <div class="work-label" id="workLabel">{{ collections.showcase[0].data.title }}</div>
       <div class="work-dashes" id="workDashes">
-        {% for item in collections.featured %}<span{% if loop.first %} class="is-active"{% endif %}></span>{% endfor %}
+        {% for item in collections.showcase %}<span{% if loop.first %} class="is-active"{% endif %}></span>{% endfor %}
       </div>
     </div>
     {% endif %}
