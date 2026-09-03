@@ -13,6 +13,21 @@
   --lime:#bfff00;
   --grid:#c9c6bc;
 }
+
+/* ---- color modes: paper (default) / dark / grey — set via data-theme on
+   <html>. Everything on the site reads its color from these tokens, so
+   swapping --paper/--ink/--grid here re-themes the whole page. ---- */
+:root[data-theme="dark"]{
+  --paper:#191a1b;
+  --ink:#e9e8ef;
+  --grid:#3a3b3c;
+}
+:root[data-theme="grey"]{
+  --paper:#bbbbbb;
+  --ink:#15151a;
+  --grid:#8f8f8f;
+}
+
 *{box-sizing:border-box; margin:0; padding:0;}
 html,body{background:var(--paper); color:var(--ink); font-family:'Inter',sans-serif; overflow-x:hidden; width:100%; cursor:default;}
 
@@ -27,7 +42,7 @@ html,body{background:var(--paper); color:var(--ink); font-family:'Inter',sans-se
   position:fixed; inset:0; z-index:1; pointer-events:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat:repeat;
-  opacity:0.16;
+  opacity:0.26;
 }
 
 /* ---- header ----
@@ -67,6 +82,8 @@ nav a:hover::after, nav a.active::after{width:100%;}
   .header-inner{padding:18px 20px; gap:10px 16px;}
   .logo .signature{font-size:10px;}
   nav{gap:18px; font-size:12px;}
+  .strip-row{grid-template-columns:1fr; justify-items:center; text-align:center; gap:8px;}
+  .strip-row > span:last-child{justify-self:center;}
 }
 
 /* ---- coords / viewport readout ----
@@ -104,7 +121,7 @@ h1{
   font-size:clamp(38px, 6vw, 70px);
   line-height:1.02;
   letter-spacing:-0.015em;
-  color:#2c2c31;
+  color:var(--ink);
 }
 
 /* ---- footer ----
@@ -118,9 +135,27 @@ footer.strip{
 }
 .footer-inner{padding:16px 40px;}
 .strip-row{
-  display:flex; justify-content:space-between; align-items:center;
+  display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px;
   opacity:0.6;
 }
+.strip-row > span:last-child{justify-self:end; text-align:right;}
+
+/* ---- color-mode toggle: sits in the middle grid column of the footer's
+   .strip-row, so it's centered regardless of how long the flanking
+   copyright/visitor-location text is. Same underline language as nav a. ---- */
+.theme-toggle{display:flex; gap:14px; font-family:'JetBrains Mono', monospace; font-size:11px;}
+.theme-toggle button{
+  font:inherit; background:none; border:none; padding:0;
+  color:var(--ink); cursor:pointer; opacity:0.55; position:relative;
+}
+.theme-toggle button::after{
+  content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px;
+  background:var(--lime); transition:width 0.25s ease;
+}
+.theme-toggle button:hover{opacity:0.9;}
+.theme-toggle button:hover::after{width:100%;}
+.theme-toggle button[aria-pressed="true"]{opacity:1;}
+.theme-toggle button[aria-pressed="true"]::after{width:100%; background:var(--ink);}
 
 /* ---- case-study image blocks: single / pair / trio ----
    Free-form layout pieces for case-study bodies. Diagonal gradient
