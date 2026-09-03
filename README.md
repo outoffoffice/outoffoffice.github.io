@@ -53,7 +53,7 @@ dek: Kurzer Subtitle-Absatz unter dem H1.
 role: Rolle
 timeframe: MM/YYYY – MM/YYYY
 stack: Tools
-heroImage: hero.jpg          # Dateiname relativ zu /content
+heroImage: mein-projekt/hero.jpg   # Dateiname relativ zu /content — ein Unterordner pro Projekt
 heroImageAlt: Alt-Text
 nextProjectLabel: Nächstes Projekt →
 nextProjectHref: /work/naechstes-projekt/
