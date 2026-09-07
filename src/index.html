@@ -46,7 +46,7 @@
   h1 .accent{color:var(--blue);}
   h1 .mark{position:relative; display:inline-block;}
   h1 .mark::after{
-    content:''; position:absolute; left:-2px; right:-2px; bottom:-0.2px; height: 8px;
+    content:''; position:absolute; left:-2px; right:-2px; bottom:-0.2px; height: 8px; z-index:-1;
     background:var(--lime); transform:skewX(-6deg) scaleX(0); transform-origin:left;
     transition:transform 0.4s ease-out;
   }
