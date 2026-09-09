@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <script>
@@ -10,7 +10,7 @@
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#bbff00">
-<title>Portfolio — Preview</title>
+<title>OutOff — Derek Milai, Creative Technologist</title>
 <script>
   // Tab title: a fresh OutOff_ pun each time the page loads.
   var titles = [
@@ -71,8 +71,8 @@
     aspect-ratio:16/9;
     border-radius:var(--radius-image);
     overflow:hidden;
-    box-shadow:0 20px 50px -20px rgba(21,21,26,0.25);
-    background:linear-gradient(135deg, #e9e8ef, #c0c0c4);
+    box-shadow:var(--shadow-image);
+    background:linear-gradient(135deg, var(--paper), var(--grid));
     transition:box-shadow 0.35s ease, transform 0.15s ease-out;
   }
   @media (hover:hover){
@@ -168,7 +168,7 @@
       </div>
       <div class="meta-item">
         <div class="label">Projects</div>
-        <div class="value">5 case studies + 2 in the lab</div>
+        <div class="value">{{ collections.work.length }} case stud{% if collections.work.length == 1 %}y{% else %}ies{% endif %}{% if collections.lab.length %} + {{ collections.lab.length }} in the lab{% endif %}</div>
       </div>
     </div>
 

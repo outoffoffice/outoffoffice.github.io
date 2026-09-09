@@ -13,6 +13,7 @@
   --lime:#bfff00;
   --grid:#c9c6bc;
   --radius-image:8px;
+  --shadow-image:0 20px 50px -20px rgba(21,21,26,0.25);
 }
 
 /* ---- color modes: paper (default) / dark / grey — set via data-theme on
@@ -173,9 +174,9 @@ footer.strip{
 .image-block .ph{
   position:relative;
   aspect-ratio:4/3;
-  background:linear-gradient(135deg, #e9e8ef, #c0c0c4);
+  background:linear-gradient(135deg, var(--paper), var(--grid));
   border-radius:var(--radius-image);
-  box-shadow:0 20px 50px -20px rgba(21,21,26,0.25);
+  box-shadow:var(--shadow-image);
   display:flex; align-items:center; justify-content:center;
   overflow:hidden;
 }
