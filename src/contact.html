@@ -191,7 +191,7 @@ title: Contact
       <div class="copy-block">
         <div class="label">Primary channel</div>
         <button class="copy-btn" id="copyBtn">
-          <span class="email">hello@outoff.dev</span>
+          <span class="email" id="emailText"></span>
           <span class="hint" id="copyHint">click to copy →</span>
         </button>
       </div>
@@ -251,11 +251,18 @@ title: Contact
   }
   renderUptime();
 
-  // copy email to clipboard
+  // Email is assembled at runtime, not written as plain text in the HTML
+  // source — keeps it off the page for scrapers that only read raw markup,
+  // while working exactly the same for real visitors.
+  const emailUser = 'derekmilai';
+  const emailDomain = 'icloud.com';
+  const email = `${emailUser}@${emailDomain}`;
+  document.getElementById('emailText').textContent = email;
+
   const copyBtn = document.getElementById('copyBtn');
   const copyHint = document.getElementById('copyHint');
   copyBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText('hello@outoff.dev').then(() => {
+    navigator.clipboard.writeText(email).then(() => {
       copyBtn.classList.add('copied');
       copyHint.textContent = 'copied ✓';
       setTimeout(() => {
