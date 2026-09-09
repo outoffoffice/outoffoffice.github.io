@@ -10,6 +10,7 @@ timeframe: 04/2021 – today
 stack: Figma / Protopie / VR
 heroImage: carhmi/hmi_hero.png
 heroImageAlt: Project hero
+year: 2021 – today
 ---
 
 ## From Hotwheels to HMI
@@ -18,7 +19,7 @@ Even though I played with Hot Wheels as a kid, I'd hesitate to call myself a typ
 
 ## Inside the OEM Pipeline
 
-My work in the automotive space has spanned close collaboration with major OEMs, where I've been involved across nearly every layer of interface design for the vehicle interior. On the visual side, this ranged from designing individual icons to creating complex animations for specific interaction scenarios — the kind of detail that shapes how a system feels in the moment. On the structural side, it meant working on UX/UI design and prototyping for the central display, translating early concepts into functioning system logic.
+My work in the automotive space has spanned close collaboration with major OEMs, where I've been involved across nearly every layer of interface design for the vehicle interior. Among these engagements, I contributed to BMW's development of IDX 25. On the visual side, this ranged from designing individual icons to creating complex animations for specific interaction scenarios — the kind of detail that shapes how a system feels in the moment. On the structural side, it meant working on UX/UI design and prototyping for the central display, translating early concepts into functioning system logic.
 
 This work spanned both pre-development and series development of system functions for driver assistance and entertainment, giving me a view into how a concept evolves from an early idea into something that actually ships. Alongside this, I contributed to research exploring new display and interaction concepts — work focused less on what already existed and more on what could come next.
 

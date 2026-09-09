@@ -86,6 +86,13 @@
     background:var(--lime); padding:2px 6px; box-decoration-break:clone; -webkit-box-decoration-break:clone;
   }
 
+  /* year footnote — quiet dateline under the article body, not part of
+     the meta-strip up top; just enough to place the work in time. */
+  .case-year{
+    padding:0 40px 40px;
+    font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.45;
+  }
+
   /* next project */
   .next{
     position:relative; z-index:2;
@@ -149,6 +156,8 @@
   <div class="case-body">
     {{ content | safe }}
   </div>
+
+  {% if year %}<div class="case-year">{{ year }}</div>{% endif %}
 
   {% set nextItem = collections | nextInCollection(tags, page.url) %}
   {% if nextItem %}

@@ -9,6 +9,7 @@ role: Concept, Design & Image Production
 stack: Photoshop
 heroImage: liqpix/liqpix_hero.png
 heroImageAlt: Project hero
+year: 2022
 ---
 
 ## 1. Challenge
