@@ -20,6 +20,12 @@
 }
 .image-block.single .ph{aspect-ratio:16/9;}
 
+/* portrait: capped narrower than the full content width and centered, so
+   a tall 4:5 image reads as a deliberate insert rather than stretching
+   edge-to-edge like the landscape variants. */
+.image-block.portrait .ph-grid{max-width:440px; margin:0 auto;}
+.image-block.portrait .ph{aspect-ratio:4/5;}
+
 .image-block .ph-label{
   font-family:'JetBrains Mono', monospace;
   font-size:11px;

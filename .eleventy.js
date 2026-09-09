@@ -41,6 +41,13 @@ module.exports = function (eleventyConfig) {
     return renderBlock("single", [{ src, alt: caption }], caption);
   });
 
+  // {% imagePortrait "pfad.jpg", "Bildunterschrift" %} — one image, 4:5
+  // portrait, capped narrower than the full content width so a tall image
+  // doesn't blow up to an enormous size.
+  eleventyConfig.addShortcode("imagePortrait", function (src, caption) {
+    return renderBlock("portrait", [{ src, alt: caption }], caption);
+  });
+
   // {% imagePair "a.jpg", "b.jpg" %} — two images side by side
   eleventyConfig.addShortcode("imagePair", function (a, b) {
     return renderBlock("pair", [{ src: a }, { src: b }]);
