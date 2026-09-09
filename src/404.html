@@ -1,0 +1,158 @@
+---
+title: Not Found
+permalink: /404.html
+eleventyExcludeFromCollections: true
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>
+  try {
+    const t = localStorage.getItem('theme');
+    if (t === 'dark' || t === 'grey') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#bbff00">
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
+<link rel="shortcut icon" href="/favicon/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+<meta name="robots" content="noindex">
+<title>OutOff — 404</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
+<style>
+  .wrap{position:relative; max-width:100vw; overflow-x:hidden; min-height:100vh; display:flex; flex-direction:column;}
+  footer.strip{margin-top:auto;}
+
+  .page-head{
+    position:relative; z-index:2;
+    flex:1;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:60px 40px; max-width:720px;
+  }
+  .kicker{
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--blue);
+    display:flex; align-items:center; gap:10px; margin-bottom:20px;
+  }
+  .kicker .dot{width:8px; height:8px; background:var(--lime); display:inline-block; border-radius:50%; animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.3;}}
+  h1{max-width:600px;}
+  h1 .accent{color:var(--blue);}
+  .page-sub{margin-top:22px; max-width:480px; font-size:16px; line-height:1.6; opacity:0.8;}
+
+  .terminal-line{
+    margin-top:36px; display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap;
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+    border:1px solid var(--ink); border-radius:999px; padding:10px 18px;
+    background:rgba(21,21,26,0.03);
+  }
+  .terminal-line .req{color:var(--blue);}
+  .terminal-line .status-404{color:#e0475c;}
+
+  .cta{
+    margin-top:36px; display:inline-flex; align-items:center; gap:12px; width:fit-content;
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+    padding:14px 22px; border:1px solid var(--ink); border-radius:999px; background:transparent;
+    color:var(--ink); text-decoration:none;
+    cursor:pointer; transition:background 0.2s ease, color 0.2s ease, transform 0.15s ease-out;
+  }
+  .cta:hover{background:var(--ink); color:var(--paper);}
+  .cta:hover .arrow{transform:translateX(4px);}
+  .arrow{transition:transform 0.2s ease;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="grid-bg"></div>
+
+  <header>
+    <div class="header-inner content-col">
+      <a href="/" class="logo"><span class="brand">OutOff</span><span class="us">_</span><span class="signature">Derek Milai, Creative Technologist</span></a>
+      {% include "partials/nav.njk" %}
+    </div>
+  </header>
+
+  <div class="viewport-readout" id="viewport-readout">viewport: —</div>
+  <div class="coords" id="coords">x: 000 / y: 000</div>
+
+  <div class="content-col" style="flex:1; display:flex;">
+  <section class="page-head">
+    <div class="kicker"><span class="dot"></span>status: 404</div>
+    <h1>This page went <span class="accent">OutOff_track.</span></h1>
+    <p class="page-sub">Whatever you were looking for isn't here — moved, renamed, or it never existed to begin with.</p>
+
+    <div class="terminal-line">
+      <span class="req">GET</span> <span id="attemptedPath">/</span> <span class="arrow">→</span> <span class="status-404">404 Not Found</span>
+    </div>
+
+    <a href="/" class="cta">Back to home <span class="arrow">→</span></a>
+  </section>
+  </div>
+
+  <footer class="strip">
+    <div class="footer-inner content-col">
+      <div class="strip-row">
+        <span>OutOff — Derek Milai — © 2026</span>
+        <div class="theme-toggle" role="group" aria-label="Color mode">
+          <button type="button" data-mode="paper" aria-pressed="true">paper</button>
+          <button type="button" data-mode="dark" aria-pressed="false">dark</button>
+          <button type="button" data-mode="grey" aria-pressed="false">grey</button>
+        </div>
+        <span id="visitor-loc">locating visitor…</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const coords = document.getElementById('coords');
+  document.addEventListener('mousemove', (e) => {
+    coords.textContent = `x: ${String(e.clientX).padStart(3,'0')} / y: ${String(e.clientY).padStart(3,'0')}`;
+  });
+
+  const viewportReadout = document.getElementById('viewport-readout');
+  function renderViewport(){
+    viewportReadout.textContent = `viewport: ${window.innerWidth}×${window.innerHeight}`;
+  }
+  window.addEventListener('resize', renderViewport);
+  renderViewport();
+
+  document.getElementById('attemptedPath').textContent = window.location.pathname || '/';
+
+  const visitorLoc = document.getElementById('visitor-loc');
+  fetch('https://ipapi.co/json/')
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.city) {
+        const lat = Number(data.latitude).toFixed(2);
+        const lon = Number(data.longitude).toFixed(2);
+        visitorLoc.textContent = `visiting from ${data.city}, ${data.country_name} — ${lat}°, ${lon}°`;
+      } else {
+        visitorLoc.textContent = 'visitor location unavailable';
+      }
+    })
+    .catch(() => {
+      visitorLoc.textContent = 'visitor location unavailable';
+    });
+
+  // Color-mode toggle (paper / dark / grey), synced with the anti-flash
+  // script in <head> and persisted in localStorage.
+  const themeButtons = document.querySelectorAll('.theme-toggle button');
+  function applyTheme(mode, persist) {
+    if (mode === 'paper') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', mode);
+    themeButtons.forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.mode === mode)));
+    if (persist) {
+      try { localStorage.setItem('theme', mode); } catch (e) {}
+    }
+  }
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'paper', false);
+  themeButtons.forEach(btn => btn.addEventListener('click', () => applyTheme(btn.dataset.mode, true)));
+</script>
+</body>
+</html>

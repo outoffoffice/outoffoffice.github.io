@@ -95,6 +95,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "content": "images" });
   eleventyConfig.addPassthroughCopy("src/css");
   eleventyConfig.addPassthroughCopy("src/favicon");
+  eleventyConfig.addPassthroughCopy("src/robots.txt");
 
   // content/ also holds .psd source files (36-38MB each, gitignored) that
   // must never ship on the deployed site — strip them back out of the
