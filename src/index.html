@@ -10,6 +10,10 @@
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#bbff00">
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
+<link rel="shortcut icon" href="/favicon/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
 <title>OutOff — Derek Milai, Creative Technologist</title>
 <script>
   // Tab title: a fresh OutOff_ pun each time the page loads.
@@ -72,7 +76,7 @@
     border-radius:var(--radius-image);
     overflow:hidden;
     box-shadow:var(--shadow-image);
-    background:linear-gradient(135deg, var(--paper), var(--grid));
+    background:linear-gradient(135deg, color-mix(in srgb, var(--paper) 20%, transparent), color-mix(in srgb, var(--grid) 20%, transparent));
     transition:box-shadow 0.35s ease, transform 0.15s ease-out;
   }
   @media (hover:hover){
