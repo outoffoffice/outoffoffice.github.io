@@ -6,6 +6,7 @@ title: "Tissue in Blue: A Wall Piece for a Treatment Room"
 kicker: case study — liqpix
 dek: A large-scale wall piece for a physiotherapy and osteopathy treatment room — an abstract image built not by depicting tissue, but by tracing the principle it forms by, smallest unit into structure, structure into wholeness.
 role: Concept, Design & Image Production
+timeframe: 2022
 stack: Photoshop
 heroImage: liqpix/liqpix_hero.png
 heroImageAlt: Project hero

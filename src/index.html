@@ -100,8 +100,12 @@
     opacity:0; transition:opacity 0.6s ease;
   }
   .work-strip img.is-active{opacity:1;}
+  .work-strip .work-footer{
+    position:absolute; left:16px; right:16px; bottom:16px; z-index:2;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
   .work-strip .work-label{
-    position:absolute; left:16px; bottom:16px; z-index:2;
+    min-width:0; flex:1 1 auto;
     font-family:'JetBrains Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.04em;
     display:flex; align-items:center; gap:6px;
     background:rgba(233,232,239,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
@@ -111,14 +115,23 @@
   .work-strip .work-label::before{
     content:''; width:6px; height:6px; border-radius:50%; background:var(--blue); flex-shrink:0;
   }
+  .work-strip .work-label-text{
+    min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+  }
   .work-strip .work-dashes{
-    position:absolute; right:16px; bottom:16px; z-index:2;
+    flex-shrink:0;
     display:flex; gap:6px;
   }
   .work-strip .work-dashes span{
     width:16px; height:3px; border-radius:2px; background:var(--ink); opacity:0.25; transition:opacity 0.3s ease, background 0.3s ease;
+    flex-shrink:0;
   }
   .work-strip .work-dashes span.is-active{opacity:1; background:var(--blue);}
+  @media (max-width:560px){
+    .work-strip .work-dashes{gap:4px;}
+    .work-strip .work-dashes span{width:10px;}
+    .work-strip .work-label{font-size:9.5px; padding:5px 10px;}
+  }
 
   .hero-meta{
     margin-top:56px; display:flex; gap:48px; flex-wrap:wrap;
@@ -165,9 +178,11 @@
     {% if collections.showcase.length %}
     <div class="work-strip" id="workStrip">
       {% for item in collections.showcase %}<a href="{{ item.url }}"><img{% if loop.first %} class="is-active"{% endif %} src="/images/{{ item.data.heroImage }}" alt="{{ item.data.heroImageAlt or item.data.title }}" data-label="{{ item.data.title }}"></a>{% endfor %}
-      <div class="work-label" id="workLabel">{{ collections.showcase[0].data.title }}</div>
-      <div class="work-dashes" id="workDashes">
-        {% for item in collections.showcase %}<span{% if loop.first %} class="is-active"{% endif %}></span>{% endfor %}
+      <div class="work-footer">
+        <div class="work-label"><span class="work-label-text" id="workLabel">{{ collections.showcase[0].data.title }}</span></div>
+        <div class="work-dashes" id="workDashes">
+          {% for item in collections.showcase %}<span{% if loop.first %} class="is-active"{% endif %}></span>{% endfor %}
+        </div>
       </div>
     </div>
     {% endif %}
