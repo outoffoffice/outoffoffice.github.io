@@ -33,7 +33,7 @@ The original idea was to fix each color's mood through set categories. Over the 
 
 Each Arc Vibe is 3D-printed, with a concentric groove structure that recalls the vinyl heritage without copying it: the shape a squircle, deliberately friendly and rounded rather than strictly geometric. At the center sits the NFC chip itself: a black, matte surface, visible rather than hidden inside the material. The technology reveals itself and, through that, becomes tangible too: replaceable if defective, separable for recycling at end of life.
 
-{% imageSingle "arc_vibe/arc_scan_row.png", "Tap moment — Arc Vibe token against the phone, Scan Here rendering" %}
+{% imageSingle "arc_vibe/arc_scan_row.png", "Tap moment — Arc Vibe token against the phone" %}
 
 **How the vibe comes to be.** What actually shapes the displayed vibe goes beyond simple color choice. Schedule and weather flank the symbol throughout as visible context sources in the interface, but they stand in for a larger set of possible factors: step count or movement data, current time of day, the next calendar entry, even ambient noise or location could feed in similarly. A history graph shows how the vibe shifts over the day: not as a fixed value, but as a curve that responds to context. Exactly how these factors are weighted — how strongly weather, appointments, or other signals actually factor in — is a question I haven't answered yet.
 
