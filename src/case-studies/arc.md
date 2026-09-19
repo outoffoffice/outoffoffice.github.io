@@ -39,6 +39,8 @@ Each Arc Vibe is 3D-printed, with a concentric groove structure that recalls the
 
 **The scan moment, without the app.** The actual listening moment is deliberately placed outside the app: tapping the Arc Vibe to the phone triggers a Dynamic Island interaction, directly from the lock screen. No opening the app, no interface. The cognitive work at this point has been fully front-loaded — into training and conversation — not eliminated, but shifted to a place where it's welcome to happen.
 
+{% imageSingle "arc_vibe/arc-vibe-scan_dynamic_island.png", "Dynamic Island interaction on the lock screen after a scan" %}
+
 ## Result
 
 The questions from the challenge (can color be more accessible than text search, can listening stay low on screen time) are answered by arc through a subjective concept, not through an objectively predetermined application. What remains individual is the translation of color, context, and personal disposition into a music selection.
