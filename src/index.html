@@ -105,8 +105,7 @@
 
   /* "000" toggle on the homepage header — reads as "out of office" zeros
      when closed, morphs into 01/02/03 links side by side when opened.
-     Hidden entirely on mobile since the large .index-nav below the
-     carousel already covers navigation there — no redundant control needed. */
+     Shown on both mobile and desktop. */
   .oo-nav{position:relative; display:flex; align-items:center;}
   .oo-toggle{
     background:none; border:none; cursor:pointer; padding:6px 2px;
@@ -114,20 +113,24 @@
     color:var(--ink); opacity:0.75; transition:opacity 0.2s ease;
   }
   .oo-toggle:hover{opacity:1;}
+  /* [hidden] on its own only has the same specificity as .oo-links, so our
+     display:flex below would otherwise win and show the links even while
+     "hidden" is set. This higher-specificity rule (class + attribute)
+     forces it closed again whenever the attribute is present. */
+  .oo-links[hidden]{display:none !important;}
   .oo-links{
-    display:flex; align-items:baseline; gap:22px;
+    display:flex !important; flex-direction:row !important; flex-wrap:nowrap;
+    align-items:baseline !important; gap:22px;
   }
   .oo-links a{
+    display:inline-flex !important; align-items:baseline; gap:6px;
     font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--ink);
-    text-decoration:none; display:inline-flex; align-items:baseline; gap:6px;
+    text-decoration:none; white-space:nowrap;
     transition:color 0.2s ease;
   }
   .oo-links a .oo-num{opacity:0.4;}
   .oo-links a:hover{color:var(--blue);}
   .oo-links a:hover .oo-num{opacity:1;}
-  @media (max-width:700px){
-    .oo-nav{display:none;}
-  }
 
   /* Large, left-aligned index navigation below the homepage carousel —
      numbered rows separated by full-width hairlines, label text does the
@@ -225,20 +228,37 @@
 
 <script>
   // "000" header toggle: swaps itself for the 01/02/03 links on click,
-  // closes again on outside click or Escape (links themselves navigate away).
+  // closes again on outside click, Escape, or after a few seconds of
+  // inactivity (timer resets on hover/focus so it won't close mid-decision).
   const ooNav = document.getElementById('ooNav');
   const ooToggle = document.getElementById('ooToggle');
   const ooLinks = document.getElementById('ooLinks');
   if (ooNav && ooToggle && ooLinks) {
+    const AUTO_CLOSE_MS = 4000;
+    let ooCloseTimer = null;
+
+    function clearOOTimer(){
+      if (ooCloseTimer) { clearTimeout(ooCloseTimer); ooCloseTimer = null; }
+    }
+    function armOOTimer(){
+      clearOOTimer();
+      ooCloseTimer = setTimeout(closeOO, AUTO_CLOSE_MS);
+    }
     function openOO(){
       ooToggle.hidden = true;
       ooLinks.hidden = false;
+      armOOTimer();
     }
     function closeOO(){
+      clearOOTimer();
       ooLinks.hidden = true;
       ooToggle.hidden = false;
     }
     ooToggle.addEventListener('click', openOO);
+    ooNav.addEventListener('mouseenter', () => { if (!ooLinks.hidden) clearOOTimer(); });
+    ooNav.addEventListener('mouseleave', () => { if (!ooLinks.hidden) armOOTimer(); });
+    ooNav.addEventListener('focusin', clearOOTimer);
+    ooNav.addEventListener('focusout', () => { if (!ooLinks.hidden) armOOTimer(); });
     document.addEventListener('click', (e) => {
       if (!ooNav.contains(e.target)) closeOO();
     });
