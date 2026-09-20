@@ -15,17 +15,17 @@
 <link rel="shortcut icon" href="/favicon/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
 <title>OutOff — Derek Milai, Creative Technologist</title>
-<link rel="canonical" href="{{ site.url }}{{ page.url }}">
-<meta name="description" content="{{ site.description }}">
+<link rel="canonical" href="https://outoffoffice.github.io/">
+<meta name="description" content="OutOff — Derek Milai, creative technologist and designer working at the seam between human and machine. A collection of case studies in interaction design, prototyping, and applied technology.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="OutOff — Derek Milai, Creative Technologist">
-<meta property="og:description" content="{{ site.description }}">
-<meta property="og:image" content="{{ site.url }}/{{ site.image }}">
-<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+<meta property="og:description" content="OutOff — Derek Milai, creative technologist and designer working at the seam between human and machine. A collection of case studies in interaction design, prototyping, and applied technology.">
+<meta property="og:image" content="https://outoffoffice.github.io/images/liqpix/liqpix_hero.png">
+<meta property="og:url" content="https://outoffoffice.github.io/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="OutOff — Derek Milai, Creative Technologist">
-<meta name="twitter:description" content="{{ site.description }}">
-<meta name="twitter:image" content="{{ site.url }}/{{ site.image }}">
+<meta name="twitter:description" content="OutOff — Derek Milai, creative technologist and designer working at the seam between human and machine. A collection of case studies in interaction design, prototyping, and applied technology.">
+<meta name="twitter:image" content="https://outoffoffice.github.io/images/liqpix/liqpix_hero.png">
 <script>
   // Tab title: a fresh OutOff_ pun each time the page loads.
   var titles = [
@@ -57,7 +57,7 @@
   }
   .eyebrow::before{content:''; width:8px; height:8px; background:var(--lime); display:inline-block;}
 
-  h1{max-width:960px;}
+  h1{max-width:960px; font-weight:700;}
   h1 .accent{color:var(--blue);}
   h1 .mark{position:relative; display:inline-block;}
   h1 .mark::after{
@@ -100,59 +100,62 @@
     opacity:0; transition:opacity 0.6s ease;
   }
   .work-strip img.is-active{opacity:1;}
-  .work-strip .work-footer{
-    position:absolute; left:16px; right:16px; bottom:16px; z-index:2;
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-  }
-  .work-strip .work-label{
-    min-width:0; flex:1 1 auto;
-    font-family:'JetBrains Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.04em;
-    display:flex; align-items:center; gap:6px;
-    background:rgba(233,232,239,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-    border-radius:999px;
-    padding:6px 12px;
-  }
-  .work-strip .work-label::before{
-    content:''; width:6px; height:6px; border-radius:50%; background:var(--blue); flex-shrink:0;
-  }
-  .work-strip .work-label-text{
-    min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
-  }
-  .work-strip .work-dashes{
-    flex-shrink:0;
-    display:flex; gap:6px;
-  }
-  .work-strip .work-dashes span{
-    width:16px; height:3px; border-radius:2px; background:var(--ink); opacity:0.25; transition:opacity 0.3s ease, background 0.3s ease;
-    flex-shrink:0;
-  }
-  .work-strip .work-dashes span.is-active{opacity:1; background:var(--blue);}
-  @media (max-width:560px){
-    .work-strip .work-dashes{gap:4px;}
-    .work-strip .work-dashes span{width:10px;}
-    .work-strip .work-label{font-size:9.5px; padding:5px 10px;}
-  }
-
-  .hero-meta{
-    margin-top:56px; display:flex; gap:48px; flex-wrap:wrap;
-    font-family:'JetBrains Mono', monospace;
-  }
-  .meta-item{border-left:1px solid var(--ink); padding-left:14px;}
-  .meta-item .label{font-size:11px; color:var(--ink); opacity:0.55; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;}
-  .meta-item .value{font-size:14px;}
-
-  .cta{
-    margin-top:56px; display:inline-flex; align-items:center; gap:12px;
-    font-family:'JetBrains Mono', monospace; font-size:13px;
-    padding:14px 22px; border:1px solid var(--ink); border-radius:999px; background:transparent;
-    color:var(--ink); text-decoration:none;
-    cursor:pointer; transition:background 0.2s ease, color 0.2s ease, transform 0.15s ease-out;
-  }
-  .cta:hover{background:var(--ink); color:var(--paper);}
-  .cta:hover .arrow{transform:translateX(4px);}
-  .arrow{transition:transform 0.2s ease;}
 
   footer.strip{margin-top:auto;}
+
+  /* "000" toggle on the homepage header — reads as "out of office" zeros
+     when closed, morphs into 01/02/03 links side by side when opened.
+     Hidden entirely on mobile since the large .index-nav below the
+     carousel already covers navigation there — no redundant control needed. */
+  .oo-nav{position:relative; display:flex; align-items:center;}
+  .oo-toggle{
+    background:none; border:none; cursor:pointer; padding:6px 2px;
+    font-family:'JetBrains Mono', monospace; font-size:13px; letter-spacing:0.05em;
+    color:var(--ink); opacity:0.75; transition:opacity 0.2s ease;
+  }
+  .oo-toggle:hover{opacity:1;}
+  .oo-links{
+    display:flex; align-items:baseline; gap:22px;
+  }
+  .oo-links a{
+    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--ink);
+    text-decoration:none; display:inline-flex; align-items:baseline; gap:6px;
+    transition:color 0.2s ease;
+  }
+  .oo-links a .oo-num{opacity:0.4;}
+  .oo-links a:hover{color:var(--blue);}
+  .oo-links a:hover .oo-num{opacity:1;}
+  @media (max-width:700px){
+    .oo-nav{display:none;}
+  }
+
+  /* Large, left-aligned index navigation below the homepage carousel —
+     numbered rows separated by full-width hairlines, label text does the
+     heavy lifting typographically instead of the usual small nav links. */
+  .index-nav{
+    margin-top:40px; max-width:800px;
+    border-top:1px solid var(--grid);
+  }
+  .index-nav-row{
+    display:flex; align-items:baseline; gap:24px;
+    padding:22px 4px;
+    border-bottom:1px solid var(--grid);
+    text-decoration:none; color:var(--ink);
+    transition:padding-left 0.2s ease, color 0.2s ease;
+  }
+  .index-nav-row .index-num{
+    font-family:'JetBrains Mono', monospace; font-size:14px; color:var(--ink);
+    opacity:0.4; min-width:28px; flex-shrink:0;
+  }
+  .index-nav-row .index-label{
+    font-family:'Montserrat', sans-serif; font-weight:600; font-size:clamp(24px, 4vw, 36px);
+    letter-spacing:-0.01em;
+  }
+  @media (hover:hover){
+    .index-nav-row:hover{padding-left:14px;}
+    .index-nav-row:hover .index-num{opacity:1; color:var(--blue);}
+    .index-nav-row:hover .index-label{color:var(--blue);}
+  }
 </style>
 </head>
 <body>
@@ -162,7 +165,15 @@
   <header>
     <div class="header-inner content-col">
       <a href="/" class="logo"><span class="brand">OutOff</span><span class="us">_</span><span class="signature">Derek Milai , Creative Technologist</span></a>
-      {% include "partials/nav.njk" %}
+      <div class="oo-nav" id="ooNav">
+        <button type="button" class="oo-toggle" id="ooToggle" aria-label="Open navigation">000</button>
+        <nav class="oo-links" id="ooLinks" hidden>
+          <a href="/work/"><span class="oo-num">01</span>work</a>
+          <a href="/lab/"><span class="oo-num">02</span>lab</a>
+          <a href="/contact/"><span class="oo-num">03</span>contact</a>
+        </nav>
+      </div>
+
     </div>
   </header>
 
@@ -175,34 +186,25 @@
     <h1>Crafting Human–Machine <span class="mark"><span class="mark-real">Understanding</span><span class="mark-scramble" aria-hidden="true"></span></span> through <span class="accent">Applied Technology.</span></h1>
     <p class="hero-sub">I'm Derek — creative technologist and designer, working under the name OutOff. I'm fascinated by the seam between human and machine: the point where analog intention turns into digital response. My focus as a designer sits exactly there.</p>
 
-    {% if collections.showcase.length %}
+    
     <div class="work-strip" id="workStrip">
-      {% for item in collections.showcase %}<a href="{{ item.url }}"><img{% if loop.first %} class="is-active"{% endif %} src="/images/{{ item.data.heroImage }}" alt="{{ item.data.heroImageAlt or item.data.title }}" data-label="{{ item.data.title }}"></a>{% endfor %}
-      <div class="work-footer">
-        <div class="work-label"><span class="work-label-text" id="workLabel">{{ collections.showcase[0].data.title }}</span></div>
-        <div class="work-dashes" id="workDashes">
-          {% for item in collections.showcase %}<span{% if loop.first %} class="is-active"{% endif %}></span>{% endfor %}
-        </div>
-      </div>
-    </div>
-    {% endif %}
-
-    <div class="hero-meta">
-      <div class="meta-item">
-        <div class="label">Focus</div>
-        <div class="value">Interfaces / 3D / Tech Pipelines</div>
-      </div>
-      <div class="meta-item">
-        <div class="label">Base</div>
-        <div class="value">Ratisbona, DE — remote</div>
-      </div>
-      <div class="meta-item">
-        <div class="label">Projects</div>
-        <div class="value">{{ collections.work.length }} case stud{% if collections.work.length == 1 %}y{% else %}ies{% endif %}{% if collections.lab.length %} + {{ collections.lab.length }} in the lab{% endif %}</div>
-      </div>
+      <a href="/work/arc/"><img class="is-active" src="/images/arc_vibe/arc_hero.png" alt="An Arc Vibe token next to the current-vibe screen on a phone" data-label="Arc"></a><a href="/work/liqpix/"><img src="/images/liqpix/liqpix_hero.png" alt="Project hero" data-label="Tissue in Blue: A Wall Piece for a Treatment Room"></a><a href="/work/beyond-the-engine/"><img src="/images/carhmi/hmi_hero.png" alt="Project hero" data-label="Beyond the Engine"></a>
     </div>
 
-    <a href="/work/" class="cta">View work <span class="arrow">→</span></a>
+    <nav class="index-nav" aria-label="Site sections">
+      <a href="/work/" class="index-nav-row">
+        <span class="index-num">01</span>
+        <span class="index-label">Work</span>
+      </a>
+      <a href="/lab/" class="index-nav-row">
+        <span class="index-num">02</span>
+        <span class="index-label">Lab</span>
+      </a>
+      <a href="/contact/" class="index-nav-row">
+        <span class="index-num">03</span>
+        <span class="index-label">Contact</span>
+      </a>
+    </nav>
   </section>
   </div>
   <footer class="strip">
@@ -222,6 +224,29 @@
 </div>
 
 <script>
+  // "000" header toggle: swaps itself for the 01/02/03 links on click,
+  // closes again on outside click or Escape (links themselves navigate away).
+  const ooNav = document.getElementById('ooNav');
+  const ooToggle = document.getElementById('ooToggle');
+  const ooLinks = document.getElementById('ooLinks');
+  if (ooNav && ooToggle && ooLinks) {
+    function openOO(){
+      ooToggle.hidden = true;
+      ooLinks.hidden = false;
+    }
+    function closeOO(){
+      ooLinks.hidden = true;
+      ooToggle.hidden = false;
+    }
+    ooToggle.addEventListener('click', openOO);
+    document.addEventListener('click', (e) => {
+      if (!ooNav.contains(e.target)) closeOO();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeOO();
+    });
+  }
+
   const coords = document.getElementById('coords');
   document.addEventListener('mousemove', (e) => {
     coords.textContent = `x: ${String(e.clientX).padStart(3,'0')} / y: ${String(e.clientY).padStart(3,'0')}`;
@@ -238,15 +263,10 @@
 
   // rotating work images below the description
   const workImages = document.querySelectorAll('#workStrip img');
-  const workDashes = document.querySelectorAll('#workDashes span');
-  const workLabel = document.getElementById('workLabel');
-  const labels = Array.from(workImages).map(img => img.dataset.label);
   let workIndex = 0;
 
   function showWork(i){
     workImages.forEach((img, n) => img.classList.toggle('is-active', n === i));
-    workDashes.forEach((d, n) => d.classList.toggle('is-active', n === i));
-    workLabel.textContent = labels[i];
   }
 
   if (workImages.length){
@@ -292,8 +312,6 @@
     });
   }
 
-  const ctaButton = document.querySelector('.cta');
-  if (ctaButton) applyMagnetic(ctaButton, 85, 12);
   const workStripEl = document.getElementById('workStrip');
   if (workStripEl) applyMagnetic(workStripEl, 85, 7);
 
