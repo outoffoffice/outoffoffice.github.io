@@ -11,7 +11,6 @@
   if (!panel) return;
   const sheet = panel.querySelector('.case-sheet');
   const content = panel.querySelector('.case-content');
-  const closeBtn = panel.querySelector('.case-close');
 
   const CASE_PATH = /^\/(work|lab)\/[^/]+\/$/;
   const homeTitle = document.title;
@@ -47,7 +46,9 @@
     panel.hidden = false;
     document.documentElement.classList.add('case-open');
     requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('is-open')));
-    closeBtn.focus({ preventScroll: true });
+    // focus goes to the sheet itself (no ring), Tab then reaches the close
+    // button; focusing the button directly made Safari draw its focus ring
+    sheet.focus({ preventScroll: true });
   }
 
   // Closing steps back through history when the sheet put an entry there

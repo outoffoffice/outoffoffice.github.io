@@ -136,19 +136,21 @@
   /* ---- blue monochrome for image tiles: the image goes greyscale and a
      --blue layer on top (screen blend) turns its darks blue while lights
      stay light — a blue/white duotone. Project tiles fade back to their
-     real colors on hover; the portrait (data-mono) stays blue. Only on
-     devices that can hover; touch screens just get the real colors. ---- */
-  .duotone img{transition:filter 0.5s ease;}
+     real colors on hover, or on touch screens (no hover) while they pass
+     through the middle of the screen (.in-view, set by the script below).
+     The portrait (data-mono) stays blue. ---- */
+  .duotone{position:relative;}
+  .duotone img{filter:grayscale(100%) contrast(1.05); transition:filter 0.5s ease;}
+  .duotone::after{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background:var(--blue); mix-blend-mode:screen;
+    transition:opacity 0.5s ease;
+  }
+  .project:focus-visible .duotone img, .project.in-view .duotone img{filter:none;}
+  .project:focus-visible .duotone::after, .project.in-view .duotone::after{opacity:0;}
   @media (hover:hover){
-    .duotone{position:relative;}
-    .duotone img{filter:grayscale(100%) contrast(1.05);}
-    .duotone::after{
-      content:''; position:absolute; inset:0; pointer-events:none;
-      background:var(--blue); mix-blend-mode:screen;
-      transition:opacity 0.5s ease;
-    }
-    .project:hover .duotone img, .project:focus-visible .duotone img{filter:none;}
-    .project:hover .duotone::after, .project:focus-visible .duotone::after{opacity:0;}
+    .project:hover .duotone img{filter:none;}
+    .project:hover .duotone::after{opacity:0;}
   }
 
   /* ---- about: portrait from column 1, a short text about Derek beside it,
@@ -389,6 +391,9 @@
   /* on the dark sheet a faint light ring keeps the black circle visible */
   :root[data-theme="dark"] .case-close{box-shadow:0 0 0 1px rgba(233,232,239,0.25);}
   .case-close:hover{transform:rotate(90deg);}
+  .case-sheet:focus{outline:none;}
+  .case-close:focus{outline:none;}
+  .case-close:focus-visible{outline:2px solid var(--blue); outline-offset:3px;}
   /* phones: the sheet takes the full width */
   @media (max-width: 640px){
     .case-slide{width:100vw;}
@@ -559,7 +564,7 @@
   <div class="case-panel" id="casePanel" hidden>
     <div class="case-scrim" data-close></div>
     <div class="case-slide">
-      <div class="case-sheet" role="dialog" aria-modal="true" aria-label="Project">
+      <div class="case-sheet" role="dialog" aria-modal="true" aria-label="Project" tabindex="-1">
         <button type="button" class="case-close" data-close aria-label="Close project"></button>
         <div class="case-content"></div>
       </div>
@@ -591,6 +596,15 @@
     spy();
   }
   filterButtons.forEach(btn => btn.addEventListener('click', () => setFilter(btn.dataset.filter)));
+
+  // ---- touch screens: a project tile shows its colors while it passes
+  // through the middle band of the screen (desktop does this on hover) ----
+  if (!window.matchMedia('(hover: hover)').matches && 'IntersectionObserver' in window) {
+    const colorBand = new IntersectionObserver((seen) => {
+      seen.forEach(e => e.target.classList.toggle('in-view', e.isIntersecting));
+    }, { rootMargin: '-35% 0px -35% 0px' });
+    entries.forEach(el => colorBand.observe(el));
+  }
 
   // ---- one-pager navigation ----
   // Every link with data-tab (header menu, logo, the 01/02/03 index) scrolls
