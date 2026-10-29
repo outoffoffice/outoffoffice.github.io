@@ -35,10 +35,10 @@
 <meta name="twitter:title" content="{{ title }}">
 <meta name="twitter:description" content="{{ dek or site.description }}">
 <meta name="twitter:image" content="{% if heroImage %}{{ site.url }}/images/{{ heroImage }}{% else %}{{ site.url }}/{{ site.image }}{% endif %}">
-<link rel="stylesheet" href="/css/fonts.css">
-<link rel="stylesheet" href="/css/shared.css">
-<link rel="stylesheet" href="/css/image-blocks.css">
-<link rel="stylesheet" href="/css/casestudy.css">
+<link rel="stylesheet" href="/css/fonts.css?v={{ site.version }}">
+<link rel="stylesheet" href="/css/shared.css?v={{ site.version }}">
+<link rel="stylesheet" href="/css/image-blocks.css?v={{ site.version }}">
+<link rel="stylesheet" href="/css/casestudy.css?v={{ site.version }}">
 <style>
   .wrap{position:relative; max-width:100vw; overflow-x:clip; min-height:100vh; display:flex; flex-direction:column;}
 </style>
@@ -105,7 +105,7 @@
   {% include "partials/footer.njk" %}
 </div>
 
-<script src="/js/lightbox.js" defer></script>
+<script src="/js/lightbox.js?v={{ site.version }}" defer></script>
 <script>
   const coords = document.getElementById('coords');
   document.addEventListener('mousemove', (e) => {

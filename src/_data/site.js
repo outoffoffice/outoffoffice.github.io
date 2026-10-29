@@ -10,4 +10,7 @@ module.exports = {
   // Date of the build that produced the page (YYYY-MM-DD) — shown in the
   // footer's status line, so it updates itself on every deploy.
   built: new Date().toISOString().slice(0, 10),
+  // Changes on every build; appended to CSS/JS links (?v=…) so browsers
+  // fetch fresh files after a deploy instead of mixing in cached old ones.
+  version: Date.now().toString(36),
 };
