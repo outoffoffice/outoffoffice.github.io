@@ -1,0 +1,52 @@
+{
+  "intro": [
+    "Right now I'm a Creative Technologist at deerstreet-experience GmbH. What draws me in is the seam between human and machine — the moment an analog intention turns into a digital response.",
+    "For as long as I can remember, I've had a deep fascination with technology and its possibilities. Since 2021 I've been designing interfaces for the automotive world, from single icons to full system logic, in close collaboration with major OEMs. Alongside that I build things that cross between physical and digital: tokens that pick music by feeling, a physical key to shared playlists, large-scale image work for real rooms."
+  ],
+  "groups": [
+    {
+      "title": "work",
+      "entries": [
+        {
+          "years": "04/2024 – today",
+          "role": "Creative Technologist",
+          "place": "deerstreet-experience GmbH",
+          "url": "https://deerstreet.de",
+          "current": true
+        },
+        {
+          "years": "04/2022 – 04/2024",
+          "role": "Interaction Designer",
+          "place": "kontrastmoment GmbH",
+          "url": "https://www.kontrastmoment.de/"
+        }
+      ]
+    },
+    {
+      "title": "jobs",
+      "entries": [
+        {
+          "years": "01/2017 – 05/2022",
+          "role": "Lecturer for Digital Interaction",
+          "place": "Freelance · Abensberg"
+        },
+        {
+          "years": "09/2020 – 02/2021",
+          "role": "Creative Help (Internship)",
+          "place": "Kreativbehörde Regensburg"
+        }
+      ]
+    },
+    {
+      "title": "studies",
+      "entries": [
+        {
+          "years": "2017 – 2021",
+          "role": "B.A. Design and Applied Arts",
+          "place": "Technische Hochschule Nürnberg Georg Simon Ohm",
+          "url": "https://d.th-nuernberg.de/"
+        }
+      ]
+    }
+  ]
+}

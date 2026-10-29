@@ -1,0 +1,27 @@
+---
+# work / lab / contact used to be separate pages and are now sections of the
+# homepage — keep the old URLs alive for bookmarks and shared links.
+pagination:
+  data: redirects
+  size: 1
+  alias: r
+redirects:
+  - { from: /work/, tab: work }
+  - { from: /lab/, tab: lab }
+  - { from: /contact/, tab: about }
+permalink: "{{ r.from }}"
+eleventyExcludeFromCollections: true
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OutOff</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="{{ site.url }}/#{{ r.tab }}">
+<meta http-equiv="refresh" content="0; url=/#{{ r.tab }}">
+</head>
+<body>
+<a href="/#{{ r.tab }}">Continue to {{ r.tab }} →</a>
+</body>
+</html>

@@ -58,34 +58,56 @@ module.exports = function (eleventyConfig) {
     return renderBlock("trio", [{ src: a }, { src: b }, { src: c }]);
   });
 
-  // Homepage work-strip carousel: every work/lab entry, pulled straight
-  // from the same tag collections the /work/ and /lab/ index pages use —
-  // no manual "featured" flag to keep in sync — shuffled at build time so
-  // it isn't always just the most recently added ones in a fixed order.
-  eleventyConfig.addCollection("showcase", function (collectionApi) {
-    const items = [
-      ...collectionApi.getFilteredByTag("work"),
-      ...collectionApi.getFilteredByTag("lab"),
-    ];
-    for (let i = items.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [items[i], items[j]] = [items[j], items[i]];
-    }
-    return items;
-  });
+  // Homepage project gallery: every case study tagged "work" or "lab", in
+  // one list — dropping a new .md into src/case-studies/ with one of those
+  // tags is all it takes to show up. Newest first, by the latest year in
+  // its `timeframe` ("04/2021 – today" counts as ongoing, i.e. newest).
+  function latestYear(item) {
+    const timeframe = String(item.data.timeframe || "");
+    if (/today|now|heute/i.test(timeframe)) return Infinity;
+    const years = timeframe.match(/\d{4}/g);
+    return years ? Math.max(...years.map(Number)) : 0;
+  }
+  function caseStudies(collectionApi) {
+    return collectionApi
+      .getAll()
+      .filter((item) => (item.data.tags || []).some((t) => t === "work" || t === "lab"))
+      .sort((a, b) => latestYear(b) - latestYear(a) || 0);
+  }
+  eleventyConfig.addCollection("projects", caseStudies);
 
-  // "Next project" links on a case-study page: the next entry in whatever
-  // tag collection (work/lab) the current page belongs to, wrapping back
-  // to the first. Derived from the collection instead of hand-typed
-  // front matter, so it can never point at a project that doesn't exist.
-  eleventyConfig.addFilter("nextInCollection", function (collections, tag, currentUrl) {
-    const tagName = Array.isArray(tag) ? tag[0] : tag;
-    const items = (collections && collections[tagName]) || [];
-    if (items.length < 2) return null;
-    const index = items.findIndex((item) => item.url === currentUrl);
-    if (index === -1) return null;
-    return items[(index + 1) % items.length];
+  // Homepage index (the fold-out list in the work & lab section): every case
+  // study automatically, plus the entries in src/data/projects.json — things
+  // without a case study, like talks or workshops. Newest first.
+  //   case study front matter:  type, summary (both optional; summary falls
+  //                             back to the dek, type to client / experiment
+  //                             for work / lab)
+  //   projects.json entries:    { year, title, type, role, summary, link? }
+  //                             (without a link the entry isn't clickable)
+  // type is one of INDEX_TYPES; only the types that occur get a filter
+  // button, and the search field appears from INDEX_SEARCH_FROM entries on.
+  const INDEX_TYPES = ["client", "personal", "experiment", "workshop", "talk"];
+  const INDEX_SEARCH_FROM = 8;
+  eleventyConfig.addCollection("index", function (collectionApi) {
+    const fromCases = caseStudies(collectionApi).map((item) => ({
+      year: item.data.year || item.data.timeframe,
+      sortYear: latestYear(item),
+      title: item.data.title,
+      type: item.data.type || ((item.data.tags || []).includes("lab") ? "experiment" : "client"),
+      role: item.data.role,
+      summary: item.data.summary || item.data.dek,
+      link: item.url,
+    }));
+    const extras = JSON.parse(fs.readFileSync(path.join(__dirname, "src", "data", "projects.json"), "utf8"))
+      .map((e) => ({ ...e, sortYear: Number(e.year) || 0 }));
+    const entries = [...fromCases, ...extras].sort((a, b) => b.sortYear - a.sortYear || 0);
+    entries.forEach((e) => {
+      if (!INDEX_TYPES.includes(e.type)) console.warn(`[index] "${e.title}": unknown type "${e.type}"`);
+    });
+    return entries;
   });
+  eleventyConfig.addFilter("indexTypes", (entries) => INDEX_TYPES.filter((t) => entries.some((e) => e.type === t)));
+  eleventyConfig.addGlobalData("indexSearchFrom", INDEX_SEARCH_FROM);
 
   // Reuse the real site CSS and images directly, no duplicated copies.
   // Passthrough of a directory always copies it verbatim (Eleventy's glob
@@ -94,8 +116,14 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "shared.css": "css/shared.css" });
   eleventyConfig.addPassthroughCopy({ "content": "images" });
   eleventyConfig.addPassthroughCopy("src/css");
+  eleventyConfig.addPassthroughCopy("src/js");
+  eleventyConfig.addPassthroughCopy("src/fonts");
   eleventyConfig.addPassthroughCopy("src/favicon");
   eleventyConfig.addPassthroughCopy("src/robots.txt");
+
+  // The homepage index and vita read src/data/*.json; rebuild while serving
+  // when they change.
+  eleventyConfig.addWatchTarget("./src/data/");
 
   // content/ also holds .psd source files (36-38MB each, gitignored) that
   // must never ship on the deployed site — strip them back out of the

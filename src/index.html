@@ -5,7 +5,7 @@
 <script>
   try {
     var t = localStorage.getItem('theme');
-    if (t === 'dark' || t === 'grey') document.documentElement.setAttribute('data-theme', t);
+    if (t === 'dark') document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,30 +34,63 @@
   ];
   document.title = titles[Math.floor(Math.random() * titles.length)];
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/fonts.css">
 <link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/casestudy.css">
+<link rel="stylesheet" href="/css/image-blocks.css">
 <style>
-  .wrap{position:relative; max-width:100vw; overflow-x:hidden; min-height:100vh; padding:0; display:flex; flex-direction:column;}
+  .wrap{position:relative; max-width:100vw; overflow-x:clip; min-height:100vh; display:flex; flex-direction:column;}
   /* .wrap is a flex column (for the sticky footer), so .content-col is a
-     flex item here — explicit align-self:center is more robust than
-     relying on auto-margin free-space distribution to center it, and
-     keeps it flush with header/footer's own (non-flex) centered .content-col. */
+     flex item here — explicit align-self:center keeps it flush with
+     header/footer's own (non-flex) centered .content-col. */
   .content-col{align-self:center; width:100%;}
 
-  .hero{
-    position:relative; z-index:2;
-    padding:110px 40px 90px;
-   
+  /* ---- one-pager sections: each sits on the 6-column grid, inset by the
+     page margin, and is at least one screen tall (below the sticky header),
+     so the page reads section after section. scroll-margin keeps jumps
+     clear of the header; gentle (proximity) snapping settles on a
+     section's start when a scroll ends close to one.
+     Every section opens with the same small mono label, aligned to grid
+     column 1, with its content laid out on the grid below. Areas are told
+     apart by the
+     background — .band gives a section a full-bleed, slightly darker
+     (--band) tone; the box-shadow + clip-path pair stretches it past the
+     centered content column to both window edges. ---- */
+  html{scroll-snap-type:y proximity;}
+  /* the page's end is a snap point too, so stopping at the footer stays
+     there instead of being pulled back up to the last section's start */
+  .site-footer{scroll-snap-align:end;}
+  .section{
+    position:relative; z-index:2; padding:0 var(--pad);
+    min-height:calc(100vh - var(--header-h)); min-height:calc(100svh - var(--header-h));
+    scroll-margin-top:var(--header-h); scroll-snap-align:start;
   }
+  .band{
+    background:var(--band);
+    box-shadow:0 0 0 100vmax var(--band); clip-path:inset(0 -100vmax);
+  }
+  .section-label{
+    grid-column:1 / span 3; align-self:end; margin-bottom:40px;
+    display:flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:400;
+    letter-spacing:0.02em; opacity:0.6;
+  }
+  .section-label::before{content:''; width:14px; height:1px; background:var(--ink); opacity:0.5;}
+
+  /* ---- intro: fills the first screen. Claim near the top, the section
+     index pinned to the bottom so both are visible without scrolling. ---- */
+  .intro{
+    display:flex; flex-direction:column;
+    padding-top:clamp(48px, 11vh, 128px); padding-bottom:48px;
+  }
+  .intro-claim{grid-column:1 / span 5;}
   .eyebrow{
     font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--blue);
-    display:flex; align-items:center; gap:10px; margin-bottom:24px;
+    display:flex; align-items:center; gap:10px; margin-bottom:32px;
   }
-  .eyebrow::before{content:''; width:8px; height:8px; background:var(--lime); display:inline-block;}
+  .eyebrow::before{content:''; width:14px; height:1px; background:var(--ink); opacity:0.5;}
 
-  h1{max-width:960px; font-weight:700;}
+  h1{max-width:960px; font-weight:700; line-height:1.1;}
   h1 .accent{color:var(--blue);}
   h1 .mark{position:relative; display:inline-block;}
   h1 .mark::after{
@@ -77,87 +110,291 @@
      could visually spill onto the next line. */
   h1 .mark-scramble{position:absolute; inset:0; visibility:hidden; white-space:nowrap; overflow:hidden;}
 
-  .hero-sub{
-    margin-top:28px; max-width:560px; font-size:16px; line-height:1.65; color:var(--ink);
-  }
 
-  .work-strip{
-    position:relative; margin-top:32px; max-width:800px;
-    aspect-ratio:16/9;
-    border-radius:var(--radius-image);
-    overflow:hidden;
-    box-shadow:var(--shadow-image);
-    background:linear-gradient(135deg, color-mix(in srgb, var(--paper) 20%, transparent), color-mix(in srgb, var(--grid) 20%, transparent));
-    transition:box-shadow 0.35s ease, transform 0.15s ease-out;
-  }
-  @media (hover:hover){
-    .work-strip:hover{box-shadow:0 28px 60px -18px rgba(21,21,26,0.3);}
-  }
-  .work-strip a{position:absolute; inset:0; pointer-events:none;}
-  .work-strip a:has(img.is-active){pointer-events:auto;}
-  .work-strip img{
-    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-    opacity:0; transition:opacity 0.6s ease;
-  }
-  .work-strip img.is-active{opacity:1;}
-
-  footer.strip{margin-top:auto;}
-
-  /* "000" toggle on the homepage header — reads as "out of office" zeros
-     when closed, morphs into 01/02/03 links side by side when opened.
-     Shown on both mobile and desktop. */
-  .oo-nav{position:relative; display:flex; align-items:center;}
-  .oo-toggle{
-    background:none; border:none; cursor:pointer; padding:6px 2px;
-    font-family:'JetBrains Mono', monospace; font-size:13px; letter-spacing:0.05em;
-    color:var(--ink); opacity:0.75; transition:opacity 0.2s ease;
-  }
-  .oo-toggle:hover{opacity:1;}
-  /* [hidden] on its own only has the same specificity as .oo-links, so our
-     display:flex below would otherwise win and show the links even while
-     "hidden" is set. This higher-specificity rule (class + attribute)
-     forces it closed again whenever the attribute is present. */
-  .oo-links[hidden]{display:none !important;}
-  .oo-links{
-    display:flex !important; flex-direction:row !important; flex-wrap:nowrap;
-    align-items:baseline !important; gap:22px;
-  }
-  .oo-links a{
-    display:inline-flex !important; align-items:baseline; gap:6px;
-    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--ink);
-    text-decoration:none; white-space:nowrap;
-    transition:color 0.2s ease;
-  }
-  .oo-links a .oo-num{opacity:0.4;}
-  .oo-links a:hover{color:var(--blue);}
-  .oo-links a:hover .oo-num{opacity:1;}
-
-  /* Large, left-aligned index navigation below the homepage carousel —
-     numbered rows separated by full-width hairlines, label text does the
-     heavy lifting typographically instead of the usual small nav links. */
-  .index-nav{
-    margin-top:40px; max-width:800px;
-    border-top:1px solid var(--grid);
-  }
+  .intro-index{margin-top:auto; padding-top:56px;}
+  .index-nav{grid-column:1 / span 2; display:flex; flex-direction:column; gap:0;}
   .index-nav-row{
     display:flex; align-items:baseline; gap:24px;
-    padding:22px 4px;
-    border-bottom:1px solid var(--grid);
+    padding:10px 4px;
     text-decoration:none; color:var(--ink);
     transition:padding-left 0.2s ease, color 0.2s ease;
   }
   .index-nav-row .index-num{
-    font-family:'JetBrains Mono', monospace; font-size:14px; color:var(--ink);
+    font-family:'JetBrains Mono', monospace; font-size:14px;
     opacity:0.4; min-width:28px; flex-shrink:0;
   }
   .index-nav-row .index-label{
-    font-family:'Montserrat', sans-serif; font-weight:600; font-size:clamp(24px, 4vw, 36px);
+    font-family:'Montserrat', sans-serif; font-weight:600; font-size:clamp(24px, 3vw, 36px);
     letter-spacing:-0.01em;
   }
   @media (hover:hover){
     .index-nav-row:hover{padding-left:14px;}
     .index-nav-row:hover .index-num{opacity:1; color:var(--blue);}
     .index-nav-row:hover .index-label{color:var(--blue);}
+  }
+
+  /* ---- blue monochrome for image tiles: the image goes greyscale and a
+     --blue layer on top (screen blend) turns its darks blue while lights
+     stay light — a blue/white duotone. Project tiles fade back to their
+     real colors on hover; the portrait (data-mono) stays blue. Only on
+     devices that can hover; touch screens just get the real colors. ---- */
+  .duotone img{transition:filter 0.5s ease;}
+  @media (hover:hover){
+    .duotone{position:relative;}
+    .duotone img{filter:grayscale(100%) contrast(1.05);}
+    .duotone::after{
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background:var(--blue); mix-blend-mode:screen;
+      transition:opacity 0.5s ease;
+    }
+    .project:hover .duotone img, .project:focus-visible .duotone img{filter:none;}
+    .project:hover .duotone::after, .project:focus-visible .duotone::after{opacity:0;}
+  }
+
+  /* ---- about: portrait from column 1, a short text about Derek beside it,
+     contact lives in the footer ---- */
+  .about{display:flex; flex-direction:column; justify-content:center; padding-top:80px; padding-bottom:80px;}
+  .about-grid{row-gap:40px;}
+  .about-photo{grid-column:1 / span 2; aspect-ratio:994 / 1304; overflow:hidden; background:#191a1b;}
+  .about-photo img{width:100%; height:100%; object-fit:cover; display:block;}
+  .about-body{grid-column:4 / span 3; display:flex; flex-direction:column; gap:22px;}
+  .about-title{
+    font-family:'Montserrat', sans-serif; font-weight:700;
+    font-size:clamp(26px, 2.6vw, 36px); line-height:1.15; letter-spacing:-0.015em;
+    margin-bottom:6px;
+  }
+  .about-body p:not(.about-title){font-size:17px; line-height:1.65; opacity:0.75; max-width:48ch;}
+  .about-more{
+    align-self:flex-start; font-family:'JetBrains Mono', monospace; font-size:12px;
+    color:var(--ink); text-decoration:underline; text-underline-offset:0.3em;
+    text-decoration-color:color-mix(in srgb, var(--ink) 35%, transparent);
+  }
+  .about-more:hover{color:var(--blue); text-decoration-color:currentColor;}
+
+  /* ---- projects: darker band, label + filter, then the gallery ---- */
+  /* (screen-tall like every section, so a jump here lands at its top even
+     when the filter leaves only a few or no tiles) */
+  .projects{padding-top:96px; padding-bottom:140px;}
+  .work-controls{
+    grid-column:4 / -1; justify-self:end; align-self:end; margin-bottom:40px;
+    display:flex; align-items:baseline; gap:40px;
+  }
+  .filters{display:flex; gap:22px; font-family:'JetBrains Mono', monospace; font-size:12px;}
+  .filters button, .idx-group button{
+    font:inherit; background:none; border:none; padding:0 0 4px; cursor:pointer;
+    color:var(--ink); opacity:0.45; position:relative; transition:opacity 0.2s ease;
+  }
+  .filters button:hover, .idx-group button:hover{opacity:0.85;}
+  .filters button[aria-pressed="true"], .idx-group button[aria-pressed="true"]{opacity:1;}
+  .filters button[aria-pressed="true"]::after, .idx-group button[aria-pressed="true"]::after{
+    content:''; position:absolute; left:0; right:0; bottom:0; height:1px; background:var(--ink);
+  }
+  /* keyboard focus, wherever it lands on the page's own controls */
+  .filters button:focus-visible, .idx-group button:focus-visible,
+  .idx-toggle:focus-visible, .idx-search:focus-visible,
+  .project:focus-visible, a.idx-row:focus-visible{
+    outline:2px solid var(--blue); outline-offset:4px; opacity:1;
+  }
+
+  /* Gallery: the page grid itself. Each entry spans as many columns as its
+     case study asks for (size s / m / l → 2 / 3 / 4) and they flow in
+     newest-first order; small tiles sit on the bottom line of their row,
+     larger ones hang from the top, which gives the editorial rhythm. */
+  .gallery{margin-top:24px; row-gap:72px; align-items:start;}
+  .project{
+    display:grid; grid-template-columns:minmax(0, 1fr) max-content;
+    grid-template-areas:"img img" "title meta"; gap:10px 16px;
+    color:var(--ink); text-decoration:none;
+  }
+  .project[hidden]{display:none;}
+  .project.size-s{grid-column:span 2; align-self:end;}
+  .project.size-m{grid-column:span 3;}
+  .project.size-l{grid-column:span 4;}
+
+  .project-img{
+    grid-area:img; aspect-ratio:4/3; overflow:hidden;
+    background:color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+  .project-img img{width:100%; height:100%; object-fit:cover; display:block;}
+  @media (hover:hover){
+    .project:hover .project-title{color:var(--blue);}
+  }
+  .project-title{
+    grid-area:title; font-family:'Inter', sans-serif; font-weight:500;
+    font-size:15px; line-height:1.35; transition:color 0.2s ease;
+  }
+  .project-meta{grid-area:meta; padding-top:1px; font-size:13px; opacity:0.5; text-align:right;}
+  .empty-state{margin-top:24px; font-family:'JetBrains Mono', monospace; font-size:13px; opacity:0.55;}
+
+  /* ---- index: an optional list view of every project (from
+     src/data/projects.json), folded away above the gallery and opened with
+     the "index" toggle next to the filter. Rows reuse the page grid's
+     column lines (year | title + summary | type | role). ---- */
+  .idx-toggle{
+    font-family:'JetBrains Mono', monospace; font-size:12px;
+    background:none; border:none; padding:0 0 4px; cursor:pointer; color:var(--ink);
+    display:inline-flex; align-items:baseline; gap:8px;
+  }
+  .idx-toggle .idx-plus{display:inline-block; transition:transform 0.3s ease;}
+  .idx-toggle[aria-expanded="true"] .idx-plus{transform:rotate(45deg);}
+  @media (hover:hover){ .idx-toggle:hover{color:var(--blue);} }
+
+  /* folds open by animating its one grid row from 0 to its full height;
+     hidden from tab order and screen readers while closed */
+  .idx-panel{
+    display:grid; grid-template-rows:0fr; visibility:hidden;
+    transition:grid-template-rows 0.5s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s linear 0.5s;
+  }
+  .idx-panel.is-open{grid-template-rows:1fr; visibility:visible; transition-delay:0s;}
+  .idx-panel-inner{min-height:0; overflow:hidden;}
+  .idx-panel-body{padding:8px 0 72px;}
+
+  .idx-bar{
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:12px 40px; margin-bottom:28px;
+    font-family:'JetBrains Mono', monospace; font-size:12px;
+  }
+  .idx-group{display:flex; flex-wrap:wrap; gap:8px 22px;}
+  .idx-search{
+    font:inherit; color:var(--ink); background:none;
+    border:none; border-bottom:1px solid color-mix(in srgb, var(--ink) 30%, transparent);
+    padding:2px 0 4px; width:180px; border-radius:0;
+  }
+  .idx-search::placeholder{color:var(--ink); opacity:0.4;}
+  .idx-total{margin-left:auto; opacity:0.55;}
+
+  .idx-list ul{list-style:none;}
+  .idx-list li[hidden]{display:none;}
+  .idx-row{
+    padding:18px 0; align-items:baseline; color:var(--ink); text-decoration:none;
+    border-top:1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+  .idx-list li:last-child .idx-row{border-bottom:1px solid color-mix(in srgb, var(--ink) 14%, transparent);}
+  .idx-row-head{
+    border-top:0; padding:0 0 10px;
+    font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.5;
+  }
+  .idx-year{grid-column:1; font-family:'JetBrains Mono', monospace; font-size:13px;}
+  .idx-name{grid-column:2 / span 2; display:flex; flex-direction:column; gap:4px;}
+  .idx-type{grid-column:4; font-family:'JetBrains Mono', monospace; font-size:12px; opacity:0.7;}
+  .idx-role{grid-column:5 / span 2; font-size:13px; opacity:0.7;}
+  .idx-row-head span{font:inherit; opacity:1;}
+  .idx-title{font-weight:500; font-size:16px; line-height:1.35; transition:color 0.2s ease;}
+  .idx-summary{font-size:14px; line-height:1.5; opacity:0.6; max-width:52ch;}
+  @media (hover:hover){
+    a.idx-row:hover .idx-title{color:var(--blue);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .idx-panel, .idx-toggle .idx-plus, .idx-title, .duotone img, .duotone::after{transition:none;}
+  }
+
+  /* ---- vita: a short personal greeting, then one column per group
+     (work, studies, …) from src/data/vita.json. Within a group, current
+     entries come first under "current", the rest under "previous". ---- */
+  .vita{padding-top:96px; padding-bottom:140px;}
+  .vita-grid{row-gap:56px;}
+  .vita-intro{grid-column:1 / span 4; display:flex; flex-direction:column; gap:18px;}
+  .vita-intro p{font-size:17px; line-height:1.65; opacity:0.75; max-width:60ch;}
+  .vita-group{grid-column:span 3; display:flex; flex-direction:column; gap:18px;}
+  /* three groups or more: two columns each, side by side */
+  .vita-grid:has(.vita-group ~ .vita-group ~ .vita-group) .vita-group{grid-column:span 2;}
+  .vita-group h3{font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:500;}
+  .vita-sub{font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.5; margin-top:6px;}
+  .vita-list{list-style:none; display:flex; flex-direction:column;}
+  .vita-entry{
+    display:grid; grid-template-columns:minmax(96px, 1fr) 3fr; gap:4px 16px;
+    padding:14px 0; border-top:1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+  .vita-years{font-family:'JetBrains Mono', monospace; font-size:12px; opacity:0.55; padding-top:2px;}
+  .vita-role{font-weight:500; font-size:15px; line-height:1.4;}
+  .vita-place{display:block; font-size:14px; opacity:0.65; margin-top:2px;}
+  .vita-place a{color:inherit; text-decoration:underline; text-underline-offset:0.25em; text-decoration-color:color-mix(in srgb, var(--ink) 35%, transparent);}
+  .vita-place a:hover{color:var(--blue); text-decoration-color:currentColor;}
+
+  /* ---- tablet: small and medium tiles both take half, large the full row ---- */
+  @media (max-width: 960px){
+    .intro-claim{grid-column:1 / -1;}
+    .index-nav{grid-column:1 / span 3;}
+    .about-photo{grid-column:1 / span 3;}
+    .about-body{grid-column:4 / span 3;}
+    .project.size-s, .project.size-m{grid-column:span 3;}
+    .project.size-l{grid-column:span 6;}
+    .vita-intro{grid-column:1 / -1;}
+    .vita-grid:has(.vita-group ~ .vita-group ~ .vita-group) .vita-group{grid-column:span 3;}
+    .idx-name{grid-column:2 / span 3;}
+    .idx-type{grid-column:5;}
+    .idx-role{grid-column:6;}
+  }
+
+  /* ---- phones: one column, everything stacks ---- */
+  @media (max-width: 640px){
+    .intro{padding-top:56px; padding-bottom:32px;}
+    .about{padding-top:56px; padding-bottom:56px;}
+    .about-photo{max-width:320px;}
+    .section-label{margin-bottom:24px;}
+    .projects{padding-top:64px; padding-bottom:88px;}
+    .gallery{margin-top:32px; row-gap:40px;}
+    .vita{padding-top:64px; padding-bottom:88px;}
+    .work-controls{justify-self:start; margin-bottom:0; flex-wrap:wrap; gap:12px 32px;}
+    .idx-total{margin-left:0;}
+    .idx-row-head{display:none;}
+    .idx-row{row-gap:6px;}
+    .idx-list li:first-child .idx-row{border-top:0;}
+  }
+  /* ---- case-study sheet (see /js/case-panel.js): slides in from the
+     right over 7/8 of the screen; the strip it leaves shows the homepage,
+     dimmed, and closes the sheet on click. .case-slide carries the motion;
+     .case-sheet inside scrolls. ---- */
+  html.case-open{overflow:hidden;}
+  .case-panel{position:fixed; inset:0; z-index:50;}
+  .case-panel[hidden]{display:none;}
+  .case-scrim{
+    position:absolute; inset:0; cursor:pointer;
+    background:rgba(21,21,26,0.35); opacity:0; transition:opacity 0.6s ease;
+    /* a light blur on the homepage behind, fading in with the dimming */
+    -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px);
+  }
+  /* grain over the blur: the page's own noise, a touch coarser (lower
+     frequency than .grid-bg's 0.85, so each speck comes out bigger) */
+  .case-scrim::before{
+    content:''; position:absolute; inset:0; pointer-events:none; opacity:0.3;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .case-slide{
+    position:absolute; top:0; right:0; bottom:0; width:87.5vw;
+    transform:translateX(100%);
+    transition:transform 0.7s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .case-panel.is-open .case-scrim{opacity:1;}
+  .case-panel.is-open .case-slide{transform:none;}
+  .case-sheet{
+    position:absolute; inset:0; overflow-y:auto; overscroll-behavior:contain;
+    background:var(--paper);
+  }
+  /* stays at the sheet's top-left while it scrolls; the negative bottom
+     margin lets the article start underneath it instead of below */
+  /* black circle, white x — the x is two drawn lines rather than a "×"
+     glyph, whose font metrics put it off-center in Safari */
+  .case-close{
+    position:sticky; top:20px; z-index:5; display:block; margin:20px 0 -60px var(--pad);
+    width:40px; height:40px; border:0; border-radius:999px; cursor:pointer;
+    background:#15151a;
+    transition:transform 0.2s ease;
+  }
+  .case-close::before, .case-close::after{
+    content:''; position:absolute; left:50%; top:50%; width:16px; height:1.5px;
+    background:#fff; border-radius:1px;
+    transform:translate(-50%, -50%) rotate(45deg);
+  }
+  .case-close::after{transform:translate(-50%, -50%) rotate(-45deg);}
+  /* on the dark sheet a faint light ring keeps the black circle visible */
+  :root[data-theme="dark"] .case-close{box-shadow:0 0 0 1px rgba(233,232,239,0.25);}
+  .case-close:hover{transform:rotate(90deg);}
+  /* phones: the sheet takes the full width */
+  @media (max-width: 640px){
+    .case-slide{width:100vw;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .case-scrim, .case-slide{transition:none;}
   }
 </style>
 </head>
@@ -167,106 +404,255 @@
 
   <header>
     <div class="header-inner content-col">
-      <a href="/" class="logo"><span class="brand">OutOff</span><span class="us">_</span><span class="signature">Derek Milai , Creative Technologist</span></a>
-      <div class="oo-nav" id="ooNav">
-        <button type="button" class="oo-toggle" id="ooToggle" aria-label="Open navigation">000</button>
-        <nav class="oo-links" id="ooLinks" hidden>
-          <a href="/work/"><span class="oo-num">01</span>work</a>
-          <a href="/lab/"><span class="oo-num">02</span>lab</a>
-          <a href="/contact/"><span class="oo-num">03</span>contact</a>
-        </nav>
-      </div>
-
+      <a href="#home" class="logo" data-tab="home"><span class="brand">OutOff</span><span class="us">_</span></a>
+      {% include "partials/nav.njk" %}
     </div>
   </header>
 
   <div class="viewport-readout" id="viewport-readout">viewport: —</div>
   <div class="coords" id="coords">x: 000 / y: 000</div>
 
-  <div class="content-col">
-  <section class="hero">
-    <div class="eyebrow">out of office, technically in it</div>
-    <h1>Crafting Human–Machine <span class="mark"><span class="mark-real">Understanding</span><span class="mark-scramble" aria-hidden="true"></span></span> through <span class="accent">Applied Technology.</span></h1>
-    <p class="hero-sub">I'm Derek — creative technologist and designer, working under the name OutOff. I'm fascinated by the seam between human and machine: the point where analog intention turns into digital response. My focus as a designer sits exactly there.</p>
+  <main class="content-col">
 
-    
-    <div class="work-strip" id="workStrip">
-      <a href="/work/arc/"><img class="is-active" src="/images/arc_vibe/arc_hero.png" alt="An Arc Vibe token next to the current-vibe screen on a phone" data-label="Arc"></a><a href="/work/liqpix/"><img src="/images/liqpix/liqpix_hero.png" alt="Project hero" data-label="Tissue in Blue: A Wall Piece for a Treatment Room"></a><a href="/work/beyond-the-engine/"><img src="/images/carhmi/hmi_hero.png" alt="Project hero" data-label="Beyond the Engine"></a>
-    </div>
-
-    <nav class="index-nav" aria-label="Site sections">
-      <a href="/work/" class="index-nav-row">
-        <span class="index-num">01</span>
-        <span class="index-label">Work</span>
-      </a>
-      <a href="/lab/" class="index-nav-row">
-        <span class="index-num">02</span>
-        <span class="index-label">Lab</span>
-      </a>
-      <a href="/contact/" class="index-nav-row">
-        <span class="index-num">03</span>
-        <span class="index-label">Contact</span>
-      </a>
-    </nav>
-  </section>
-  </div>
-  <footer class="strip">
-    <div class="footer-inner content-col">
-      <div class="strip-row">
-        <span>OutOff — Derek Milai — © 2026</span>
-        <div class="theme-toggle" role="group" aria-label="Color mode">
-          <button type="button" data-mode="paper" aria-pressed="true">paper</button>
-          <button type="button" data-mode="dark" aria-pressed="false">dark</button>
-          <button type="button" data-mode="grey" aria-pressed="false">grey</button>
-        </div>
-        <span id="visitor-loc">locating visitor…</span>
+  <!-- ===== intro ===== -->
+  <section class="section intro" id="home">
+    <div class="grid">
+      <div class="intro-claim">
+        <div class="eyebrow">out of office, technically in it</div>
+        <h1>Crafting Human–Machine <span class="mark"><span class="mark-real">Understanding</span><span class="mark-scramble" aria-hidden="true"></span></span> through <span class="accent">Applied Technology.</span></h1>
       </div>
     </div>
-  </footer>
+
+    <div class="grid intro-index">
+      <nav class="index-nav" aria-label="Site sections">
+        <a href="#about" class="index-nav-row" data-tab="about">
+          <span class="index-num">01</span>
+          <span class="index-label">About</span>
+        </a>
+        <a href="#work" class="index-nav-row" data-tab="work">
+          <span class="index-num">02</span>
+          <span class="index-label">Work</span>
+        </a>
+        <a href="#lab" class="index-nav-row" data-tab="lab">
+          <span class="index-num">03</span>
+          <span class="index-label">Lab</span>
+        </a>
+        <a href="#vita" class="index-nav-row" data-tab="vita">
+          <span class="index-num">04</span>
+          <span class="index-label">Vita</span>
+        </a>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ===== about ===== -->
+  <section class="section about" id="about">
+    <div class="grid about-grid">
+      <h2 class="section-label">about</h2>
+      <figure class="about-photo duotone" data-mono>
+        <img src="/images/profile/dissolve-gaussian-picture.png" alt="Portrait of Derek Milai, dissolving into colored pixels" loading="lazy">
+      </figure>
+      <div class="about-body">
+        <p class="about-title">Hi, I'm Derek.</p>
+        <p>I'm a creative technologist and designer working under the name OutOff, focused on the seam between analog and digital — where human intention turns into machine response.</p>
+        <a href="#vita" class="about-more" data-tab="vita">more in the vita ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== projects (work + lab) ===== -->
+  {% from "partials/project-card.njk" import entry %}
+  <section class="section projects band" id="work">
+    <div class="grid">
+      <h2 class="section-label">work &amp; lab</h2>
+      <div class="work-controls">
+        <div class="filters" id="lab" role="group" aria-label="Filter projects">
+          <button type="button" data-filter="all" aria-pressed="true">all</button>
+          <button type="button" data-filter="work" aria-pressed="false">work</button>
+          <button type="button" data-filter="lab" aria-pressed="false">lab</button>
+        </div>
+        <button type="button" class="idx-toggle" aria-expanded="false" aria-controls="idxPanel">index <span class="idx-plus" aria-hidden="true">+</span></button>
+      </div>
+    </div>
+
+    <!-- index: every case study plus the extras in src/data/projects.json, folded
+         away until opened (see /js/project-index.js) -->
+    <div class="idx-panel" id="idxPanel" role="region" aria-label="Project index">
+      <div class="idx-panel-inner"><div class="idx-panel-body">
+        <div class="idx-bar">
+          <div class="idx-group" role="group" aria-label="Filter index by type">
+            <button type="button" data-idx-type="all" aria-pressed="true">all</button>
+            {%- for t in collections.index | indexTypes %}
+            <button type="button" data-idx-type="{{ t }}" aria-pressed="false">{{ t }}</button>
+            {%- endfor %}
+          </div>
+          {%- if collections.index.length >= indexSearchFrom %}
+          <input type="search" class="idx-search" id="idxSearch" placeholder="search" aria-label="Search the index" autocomplete="off">
+          {%- endif %}
+          <p class="idx-total" aria-live="polite">Total: <span id="idxTotal">{{ collections.index.length }}</span></p>
+        </div>
+        <div class="idx-list">
+          <div class="grid idx-row idx-row-head" aria-hidden="true">
+            <span class="idx-year">year</span><span class="idx-name">title</span><span class="idx-type">type</span><span class="idx-role">role</span>
+          </div>
+          <ul role="list">
+            {%- for p in collections.index %}
+            <li data-type="{{ p.type }}">
+              {% if p.link %}<a class="grid idx-row" href="{{ p.link }}">{% else %}<div class="grid idx-row">{% endif %}
+                <span class="idx-year">{{ p.year }}</span>
+                <span class="idx-name"><span class="idx-title">{{ p.title }}</span><span class="idx-summary">{{ p.summary }}</span></span>
+                <span class="idx-type">{{ p.type }}</span>
+                <span class="idx-role">{{ p.role }}</span>
+              {% if p.link %}</a>{% else %}</div>{% endif %}
+            </li>
+            {%- endfor %}
+          </ul>
+        </div>
+        <p class="empty-state" id="idxEmpty"{% if collections.index.length %} hidden{% endif %}>Nothing matches.</p>
+      </div></div>
+    </div>
+
+    <div class="grid gallery" id="gallery">
+      {% for item in collections.projects %}
+        {{ entry(item) }}
+      {% endfor %}
+    </div>
+    <p class="empty-state" id="galleryEmpty"{% if collections.projects.length %} hidden{% endif %}>Nothing published here yet — check back soon.</p>
+  </section>
+
+  <!-- ===== vita (content: src/data/vita.json) ===== -->
+  <section class="section vita" id="vita">
+    <div class="grid vita-grid">
+      <h2 class="section-label">vita</h2>
+      <div class="vita-intro">
+        {%- for paragraph in vita.intro %}
+        <p>{{ paragraph }}</p>
+        {%- endfor %}
+      </div>
+      {%- for group in vita.groups %}
+      <div class="vita-group">
+        <h3>→ {{ group.title }}</h3>
+        {%- set current = group.entries | selectattr("current") %}
+        {%- set previous = group.entries | rejectattr("current") %}
+        {%- for part in [["current", current], ["previous", previous]] %}
+        {%- if part[1].length %}
+        {%- if current.length and previous.length %}<p class="vita-sub">{{ part[0] }}</p>{% endif %}
+        <ul class="vita-list" role="list">
+          {%- for e in part[1] %}
+          <li class="vita-entry">
+            <span class="vita-years">{{ e.years }}</span>
+            <span class="vita-role">{{ e.role }}{% if e.place %}<span class="vita-place">@ {% if e.url %}<a href="{{ e.url }}" target="_blank" rel="noopener">{{ e.place }}</a>{% else %}{{ e.place }}{% endif %}</span>{% endif %}</span>
+          </li>
+          {%- endfor %}
+        </ul>
+        {%- endif %}
+        {%- endfor %}
+      </div>
+      {%- endfor %}
+    </div>
+  </section>
+
+  </main>
+
+  {% include "partials/footer.njk" %}
+
+  <div class="case-panel" id="casePanel" hidden>
+    <div class="case-scrim" data-close></div>
+    <div class="case-slide">
+      <div class="case-sheet" role="dialog" aria-modal="true" aria-label="Project">
+        <button type="button" class="case-close" data-close aria-label="Close project"></button>
+        <div class="case-content"></div>
+      </div>
+    </div>
+  </div>
+  <script src="/js/project-index.js" defer></script>
+  <script src="/js/case-panel.js" defer></script>
+  <script src="/js/lightbox.js" defer></script>
 
 </div>
 
 <script>
-  // "000" header toggle: swaps itself for the 01/02/03 links on click,
-  // closes again on outside click, Escape, or after a few seconds of
-  // inactivity (timer resets on hover/focus so it won't close mid-decision).
-  const ooNav = document.getElementById('ooNav');
-  const ooToggle = document.getElementById('ooToggle');
-  const ooLinks = document.getElementById('ooLinks');
-  if (ooNav && ooToggle && ooLinks) {
-    const AUTO_CLOSE_MS = 4000;
-    let ooCloseTimer = null;
+  // ---- project filter: all / work / lab ----
+  const entries = Array.from(document.querySelectorAll('#gallery .project'));
+  const galleryEmpty = document.getElementById('galleryEmpty');
+  const filterButtons = document.querySelectorAll('[data-filter]');
+  let filter = 'all';
 
-    function clearOOTimer(){
-      if (ooCloseTimer) { clearTimeout(ooCloseTimer); ooCloseTimer = null; }
-    }
-    function armOOTimer(){
-      clearOOTimer();
-      ooCloseTimer = setTimeout(closeOO, AUTO_CLOSE_MS);
-    }
-    function openOO(){
-      ooToggle.hidden = true;
-      ooLinks.hidden = false;
-      armOOTimer();
-    }
-    function closeOO(){
-      clearOOTimer();
-      ooLinks.hidden = true;
-      ooToggle.hidden = false;
-    }
-    ooToggle.addEventListener('click', openOO);
-    ooNav.addEventListener('mouseenter', () => { if (!ooLinks.hidden) clearOOTimer(); });
-    ooNav.addEventListener('mouseleave', () => { if (!ooLinks.hidden) armOOTimer(); });
-    ooNav.addEventListener('focusin', clearOOTimer);
-    ooNav.addEventListener('focusout', () => { if (!ooLinks.hidden) armOOTimer(); });
-    document.addEventListener('click', (e) => {
-      if (!ooNav.contains(e.target)) closeOO();
+  function setFilter(next){
+    filter = next;
+    let n = 0;
+    entries.forEach(el => {
+      const show = filter === 'all' || el.dataset.type === filter;
+      el.hidden = !show;
+      if (show) n++;
     });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeOO();
-    });
+    galleryEmpty.hidden = n > 0;
+    filterButtons.forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.filter === filter)));
+    spy();
   }
+  filterButtons.forEach(btn => btn.addEventListener('click', () => setFilter(btn.dataset.filter)));
 
+  // ---- one-pager navigation ----
+  // Every link with data-tab (header menu, logo, the 01/02/03 index) scrolls
+  // to its section; "work" and "lab" both land on the gallery and set the
+  // filter. The hash is kept in sync so /#lab etc. can be shared.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // While a jump is scrolling, the scroll spy is paused (the pill goes
+  // straight to the target instead of flicking through every section the
+  // scroll passes); it takes over again once scrolling has settled.
+  let jumping = false;
+  let settleTimer = null;
+  function go(name, smooth){
+    jumping = true;
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(settle, 150);
+    if (name === 'work' || name === 'lab') setFilter(name);
+    if (window.OutOffTabs) window.OutOffTabs.select(name === 'work' || name === 'lab' ? filter : name);
+    const behavior = smooth && !reduceMotion ? 'smooth' : 'auto';
+    if (name === 'home') window.scrollTo({ top: 0, behavior });
+    else document.getElementById(name === 'lab' ? 'work' : name).scrollIntoView({ behavior });
+    history.replaceState(null, '', name === 'home' ? location.pathname : '#' + name);
+  }
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[data-tab]');
+    if (!link) return;
+    e.preventDefault();
+    go(link.dataset.tab, true);
+  });
+
+  // Scroll spy: the menu's selector pill follows whichever section is
+  // under the upper third of the screen (in page order; the gallery reads
+  // as work or lab depending on the filter).
+  const sections = Array.from(document.querySelectorAll('main > .section'));
+  function settle(){
+    jumping = false;
+    spy();
+  }
+  function spy(){
+    if (!window.OutOffTabs || jumping) return;
+    let current = 'home';
+    sections.forEach(s => { if (s.getBoundingClientRect().top <= window.innerHeight * 0.35) current = s.id; });
+    if (current === 'work') current = filter;  // all / work / lab
+    window.OutOffTabs.select(current);
+  }
+  window.addEventListener('scroll', () => {
+    if (jumping) {
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(settle, 150);
+    } else {
+      spy();
+    }
+  }, { passive: true });
+
+  // tabs.js is deferred, so wait for it before the first spy / deep link.
+  document.addEventListener('DOMContentLoaded', () => {
+    const hash = location.hash.slice(1);
+    if (['about', 'work', 'lab', 'vita'].includes(hash)) go(hash, false);
+    else if (hash === 'contact') go('about', false);  // old links to the former hello section
+    spy();
+  });
+
+  // ---- small live details ----
   const coords = document.getElementById('coords');
   document.addEventListener('mousemove', (e) => {
     coords.textContent = `x: ${String(e.clientX).padStart(3,'0')} / y: ${String(e.clientY).padStart(3,'0')}`;
@@ -279,61 +665,6 @@
   window.addEventListener('resize', renderViewport);
   renderViewport();
 
-  const visitorLoc = document.getElementById('visitor-loc');
-
-  // rotating work images below the description
-  const workImages = document.querySelectorAll('#workStrip img');
-  let workIndex = 0;
-
-  function showWork(i){
-    workImages.forEach((img, n) => img.classList.toggle('is-active', n === i));
-  }
-
-  if (workImages.length){
-    setInterval(() => {
-      workIndex = (workIndex + 1) % workImages.length;
-      showWork(workIndex);
-    }, 8000);
-  }
-
-  fetch('https://ipapi.co/json/')
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.city) {
-        const lat = Number(data.latitude).toFixed(2);
-        const lon = Number(data.longitude).toFixed(2);
-        visitorLoc.textContent = `visiting from ${data.city}, ${data.country_name} — ${lat}°, ${lon}°`;
-      } else {
-        visitorLoc.textContent = 'visitor location unavailable';
-      }
-    })
-    .catch(() => {
-      visitorLoc.textContent = 'visitor location unavailable';
-    });
-
-  // Magnetic hover: nudges `el` toward the cursor while it's within `radius`px
-  // of the element's center, capped at `maxOffset`px. Snap-back happens via
-  // the element's own CSS transition, so this only ever sets a transform.
-  function applyMagnetic(el, radius, maxOffset) {
-    document.addEventListener('mousemove', (e) => {
-      const rect = el.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = e.clientX - cx;
-      const dy = e.clientY - cy;
-      const dist = Math.hypot(dx, dy);
-      if (dist < radius) {
-        const pull = (1 - dist / radius) * maxOffset;
-        const angle = Math.atan2(dy, dx);
-        el.style.transform = `translate(${(Math.cos(angle) * pull).toFixed(2)}px, ${(Math.sin(angle) * pull).toFixed(2)}px)`;
-      } else {
-        el.style.transform = '';
-      }
-    });
-  }
-
-  const workStripEl = document.getElementById('workStrip');
-  if (workStripEl) applyMagnetic(workStripEl, 85, 7);
 
   // Scramble/decode reveal for the "Understanding" claim word only.
   // mark-real (normal text flow) reserves the layout space at all times;
@@ -345,7 +676,7 @@
   if (markRealEl && markScrambleEl) {
     const finalText = markRealEl.textContent;
     const scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*+=?/<>{}[]~^';
-    const holdDuration = 2600;  // cryptic glitch hold before decoding starts
+    const holdDuration = 900;   // cryptic glitch hold before decoding starts
     const glitchInterval = 90;  // how often the cryptic text re-randomizes during the hold
     const totalFrames = 22;
     const duration = 900;
@@ -388,23 +719,6 @@
     }, holdDuration);
   }
 
-  // Color-mode toggle (paper / dark / grey), synced with the anti-flash
-  // script in <head> and persisted in localStorage.
-  var themeButtons = document.querySelectorAll('.theme-toggle button');
-  function applyTheme(mode, persist) {
-    if (mode === 'paper') document.documentElement.removeAttribute('data-theme');
-    else document.documentElement.setAttribute('data-theme', mode);
-    themeButtons.forEach(function (btn) {
-      btn.setAttribute('aria-pressed', String(btn.dataset.mode === mode));
-    });
-    if (persist) {
-      try { localStorage.setItem('theme', mode); } catch (e) {}
-    }
-  }
-  applyTheme(document.documentElement.getAttribute('data-theme') || 'paper', false);
-  themeButtons.forEach(function (btn) {
-    btn.addEventListener('click', function () { applyTheme(btn.dataset.mode, true); });
-  });
 </script>
 </body>
 </html>

@@ -6,7 +6,10 @@ title: "VLP: A Physical Key to Digital Playlists"
 kicker: case study — vlp
 dek: A physical tag that unlocks a curated Spotify playlist — bringing back the ritual of sharing music as an object, without competing with streaming as a format.
 role: Concept, Design & Physical Object Development
+type: personal
+summary: "A physical tag that unlocks a curated Spotify playlist, bringing back music as something you hand over."
 timeframe: 2019
+size: m
 stack: NFC/RFID, Print Design, Spotify API
 heroImage: vlp/vlp_hero_1.png
 heroImageAlt: Project hero

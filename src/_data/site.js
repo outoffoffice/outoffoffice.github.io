@@ -7,4 +7,7 @@ module.exports = {
   description:
     "OutOff — Derek Milai, creative technologist and designer working at the seam between human and machine. A collection of case studies in interaction design, prototyping, and applied technology.",
   image: "images/liqpix/liqpix_hero.png",
+  // Date of the build that produced the page (YYYY-MM-DD) — shown in the
+  // footer's status line, so it updates itself on every deploy.
+  built: new Date().toISOString().slice(0, 10),
 };

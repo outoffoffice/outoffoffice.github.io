@@ -1,5 +1,10 @@
-<nav>
-  <a href="/work/"{% if "/work/" in page.url %} class="active"{% endif %}>work</a>
-  <a href="/lab/"{% if "/lab/" in page.url %} class="active"{% endif %}>lab</a>
-  <a href="/contact/"{% if "/contact/" in page.url %} class="active"{% endif %}>contact</a>
+<nav class="tabs" id="tabs" aria-label="Sections">
+  <button type="button" class="tabs-toggle" aria-expanded="false" aria-label="Open menu"></button>
+  <span class="tab-group" aria-hidden="true"></span>
+  <span class="tab-pill" aria-hidden="true"></span>
+  <a href="/#about" data-tab="about">about</a>
+  <a href="/#work" data-tab="work">work</a>
+  <a href="/#lab" data-tab="lab">lab</a>
+  <a href="/#vita" data-tab="vita">vita</a>
 </nav>
+<script src="/js/tabs.js" defer></script>
