@@ -9,6 +9,8 @@
   } catch (e) {}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS would otherwise turn year ranges like 2017 – 2021 into phone links -->
+<meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#bbff00">
 <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg">
 <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
@@ -119,6 +121,8 @@
     text-decoration:none; color:var(--ink);
     transition:padding-left 0.2s ease, color 0.2s ease;
   }
+  /* it's a <nav>, but without the header links' lime underline */
+  .index-nav-row::after{content:none;}
   .index-nav-row .index-num{
     font-family:'JetBrains Mono', monospace; font-size:14px;
     opacity:0.4; min-width:28px; flex-shrink:0;
@@ -213,11 +217,15 @@
   .project.size-m{grid-column:span 3;}
   .project.size-l{grid-column:span 4;}
 
+  /* each image keeps its own proportions (a poster stays tall, a screen
+     wide), which loosens the gallery's rhythm; a tile without an image
+     falls back to a 4:3 placeholder */
   .project-img{
-    grid-area:img; aspect-ratio:4/3; overflow:hidden;
+    grid-area:img; overflow:hidden;
     background:color-mix(in srgb, var(--ink) 8%, transparent);
   }
-  .project-img img{width:100%; height:100%; object-fit:cover; display:block;}
+  .project-img:not(:has(img)){aspect-ratio:4/3;}
+  .project-img img{width:100%; height:auto; display:block;}
   @media (hover:hover){
     .project:hover .project-title{color:var(--blue);}
   }
@@ -338,6 +346,9 @@
     .vita{padding-top:64px; padding-bottom:88px;}
     .work-controls{justify-self:start; margin-bottom:0; flex-wrap:wrap; gap:12px 32px;}
     .idx-total{margin-left:0;}
+    /* the index's type filter sits right below the gallery filter here:
+       a rule between the two keeps them apart */
+    .idx-panel-body{margin-top:20px; padding-top:20px; border-top:1px solid color-mix(in srgb, var(--ink) 14%, transparent);}
     .idx-row-head{display:none;}
     .idx-row{row-gap:6px;}
     .idx-list li:first-child .idx-row{border-top:0;}
@@ -368,9 +379,16 @@
   }
   .case-panel.is-open .case-scrim{opacity:1;}
   .case-panel.is-open .case-slide{transform:none;}
+  /* the paper sits on .case-slide with the page's grain over it (same
+     noise and strength as .grid-bg), so the sheet matches the homepage;
+     the sheet itself is transparent and scrolls above the still grain */
+  .case-slide{background:var(--paper);}
+  .case-slide::before{
+    content:''; position:absolute; inset:0; pointer-events:none; opacity:0.26;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
   .case-sheet{
     position:absolute; inset:0; overflow-y:auto; overscroll-behavior:contain;
-    background:var(--paper);
   }
   /* stays at the sheet's top-left while it scrolls; the negative bottom
      margin lets the article start underneath it instead of below */

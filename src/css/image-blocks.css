@@ -26,6 +26,10 @@
 .image-block.portrait .ph-grid{max-width:440px; margin:0 auto;}
 .image-block.portrait .ph{aspect-ratio:4/5;}
 
+/* posters: A4 sheets (210 × 297) shown whole, three across */
+.image-block.posters .ph-grid{grid-template-columns:repeat(3, 1fr);}
+.image-block.posters .ph{aspect-ratio:210/297;}
+
 .image-block .ph-label{
   font-family:'JetBrains Mono', monospace;
   font-size:11px;
@@ -52,4 +56,5 @@
 @media (max-width: 720px){
   .image-block.pair .ph-grid,
   .image-block.trio .ph-grid{grid-template-columns:1fr;}
+  .image-block.posters .ph-grid{grid-template-columns:1fr 1fr;}
 }

@@ -58,6 +58,12 @@ module.exports = function (eleventyConfig) {
     return renderBlock("trio", [{ src: a }, { src: b }, { src: c }]);
   });
 
+  // {% imagePosters "a.jpg", "b.jpg", … %} — any number of A4 portrait
+  // images (posters, prints) in an uncropped grid: three across, two on phones
+  eleventyConfig.addShortcode("imagePosters", function (...srcs) {
+    return renderBlock("posters", srcs.map((src) => ({ src })));
+  });
+
   // Homepage project gallery: every case study tagged "work" or "lab", in
   // one list — dropping a new .md into src/case-studies/ with one of those
   // tags is all it takes to show up. Newest first, by the latest year in

@@ -1,10 +1,16 @@
 <footer class="site-footer">
   <div class="footer-inner content-col grid">
-    <p class="footer-status">
+    <!-- three small stacks on the page grid's first columns, then links and
+         the color-mode toggle on the right (see .site-footer in shared.css) -->
+    <p class="footer-col">
       <span class="footer-brand">OutOff_</span>
       <span>© {{ site.built | truncate(4, true, "") }} Derek Milai</span>
+    </p>
+    <p class="footer-col">
       <span>built with <a href="https://www.11ty.dev/" target="_blank" rel="noopener">Eleventy</a></span>
       <span>last build {{ site.built }}</span>
+    </p>
+    <p class="footer-col">
       <span>no cookies, no tracking</span>
       <span><a href="/impressum/">imprint &amp; privacy</a></span>
     </p>

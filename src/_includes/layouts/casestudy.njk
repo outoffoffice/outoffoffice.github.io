@@ -18,6 +18,8 @@
   }
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS would otherwise turn year ranges like 2017 – 2021 into phone links -->
+<meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#bbff00">
 <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg">
 <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
@@ -29,12 +31,12 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="{{ title }}">
 <meta property="og:description" content="{{ dek or site.description }}">
-<meta property="og:image" content="{% if heroImage %}{{ site.url }}/images/{{ heroImage }}{% else %}{{ site.url }}/{{ site.image }}{% endif %}">
+<meta property="og:image" content="{% if heroImage or cardImage %}{{ site.url }}/images/{{ heroImage or cardImage }}{% else %}{{ site.url }}/{{ site.image }}{% endif %}">
 <meta property="og:url" content="{{ site.url }}{{ page.url }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ title }}">
 <meta name="twitter:description" content="{{ dek or site.description }}">
-<meta name="twitter:image" content="{% if heroImage %}{{ site.url }}/images/{{ heroImage }}{% else %}{{ site.url }}/{{ site.image }}{% endif %}">
+<meta name="twitter:image" content="{% if heroImage or cardImage %}{{ site.url }}/images/{{ heroImage or cardImage }}{% else %}{{ site.url }}/{{ site.image }}{% endif %}">
 <link rel="stylesheet" href="/css/fonts.css?v={{ site.version }}">
 <link rel="stylesheet" href="/css/shared.css?v={{ site.version }}">
 <link rel="stylesheet" href="/css/image-blocks.css?v={{ site.version }}">
