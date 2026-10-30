@@ -64,6 +64,15 @@ module.exports = function (eleventyConfig) {
     return renderBlock("posters", srcs.map((src) => ({ src })));
   });
 
+  // Case-study facts: a list in the front matter, or a string split on
+  // ", " or " / " ("Figma / Blender" → ["Figma", "Blender"]); "NFC/RFID"
+  // without spaces stays one item.
+  eleventyConfig.addFilter("asList", (value) => {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    return String(value).split(/\s*,\s*|\s+\/\s+/).filter(Boolean);
+  });
+
   // Homepage project gallery: every case study tagged "work" or "lab", in
   // one list — dropping a new .md into src/case-studies/ with one of those
   // tags is all it takes to show up. Newest first, by the latest year in

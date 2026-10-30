@@ -3,12 +3,15 @@
    fetches that same page and shows its <article class="case">. Everything
    is scoped to .case so it can't collide with the homepage's own styles. */
 
-/* ---- project header ---- */
+/* ---- project header: on the page grid — kicker, title and dek across
+   columns 1–4, the facts stacked in 5–6. Tablets and phones: the facts
+   move below, side by side in three (phones: two) columns. ---- */
 .case .project-head{
   position:relative; z-index:2;
-  padding:80px var(--pad) 60px;
+  padding:80px var(--pad) 60px; row-gap:48px; align-items:start;
   border-bottom:1px solid var(--ink);
 }
+.case .project-intro{grid-column:1 / span 4;}
 .case .kicker{
   font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--blue);
   display:flex; align-items:center; gap:10px; margin-bottom:20px;
@@ -21,31 +24,35 @@
   margin-top:22px; max-width:560px; font-size:17px; line-height:1.6; color:var(--ink); opacity:0.85;
 }
 
-/* optional quick links (front matter `links:`), right under the dek */
-.case .case-links{list-style:none; display:flex; flex-wrap:wrap; gap:10px; margin-top:28px;}
-.case .case-links a{
-  display:inline-flex; align-items:center; gap:6px;
-  padding:9px 16px; border:1px solid var(--ink); border-radius:999px;
-  font-family:'JetBrains Mono', monospace; font-size:12px;
-  color:var(--ink); text-decoration:none; transition:background 0.2s ease, color 0.2s ease;
+/* facts: mono label over a plain value, one per row between hairlines —
+   the same list language as the vita */
+.case .case-facts{grid-column:5 / span 2; display:flex; flex-direction:column;}
+.case .fact{
+  display:flex; flex-direction:column; gap:6px; padding:14px 0;
+  border-top:1px solid color-mix(in srgb, var(--ink) 14%, transparent);
 }
-.case .case-links a:hover{background:var(--ink); color:var(--paper);}
+.case .fact:last-child{border-bottom:1px solid color-mix(in srgb, var(--ink) 14%, transparent);}
+.case .fact dt{font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.55; text-transform:lowercase;}
+.case .fact dd{font-size:14px; line-height:1.5;}
+.case .fact ul{list-style:none;}
+.case .fact .fact-note{opacity:0.55;}
+.case .fact a{
+  color:inherit; text-decoration:underline; text-underline-offset:0.25em;
+  text-decoration-color:color-mix(in srgb, var(--ink) 35%, transparent);
+}
+.case .fact a:hover{color:var(--blue); text-decoration-color:currentColor;}
+
+@media (max-width: 960px){
+  .case .project-intro{grid-column:1 / -1;}
+  .case .case-facts{grid-column:1 / -1; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); column-gap:var(--gap);}
+  .case .fact:last-child{border-bottom:0;}
+}
+@media (max-width: 640px){
+  .case .case-facts{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
 
 /* every image in the article can be opened large (see /js/lightbox.js) */
 .case .hero-image img, .case .case-body img{cursor:zoom-in;}
-
-/* meta strip — table-like, technical */
-.case .meta-strip{
-  display:grid; grid-template-columns:repeat(4, 1fr);
-  border-top:1px solid var(--ink); margin-top:52px;
-}
-.case .meta-cell{
-  border-right:1px solid var(--ink); padding:16px 20px;
-  font-family:'JetBrains Mono', monospace;
-}
-.case .meta-cell:last-child{border-right:none;}
-.case .meta-cell .label{font-size:11px; opacity:0.55; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;}
-.case .meta-cell .value{font-size:14px;}
 
 /* ---- hero image: inset by the same side padding as the text above and
    below it, so its edges line up with them. ---- */
@@ -85,9 +92,6 @@
   font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.45;
 }
 
-@media (max-width: 720px){
-  .case .meta-strip{grid-template-columns:repeat(2, 1fr);}
-}
 
 /* ---- lightbox: one image, as large as the screen allows ---- */
 .lightbox{

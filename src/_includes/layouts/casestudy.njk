@@ -60,34 +60,46 @@
   <div class="coords" id="coords">x: 000 / y: 000</div>
 
   <article class="content-col case">
-  <section class="project-head">
-    <div class="kicker">{{ kicker }}</div>
-    <h1>{{ title }}</h1>
-    {% if dek %}<p class="dek">{{ dek }}</p>{% endif %}
-    {#- Optional quick links, straight from the front matter:
-          links:
-            - { label: "Live prototype", url: "https://…" }
-            - { label: "GitHub", url: "https://…" }  #}
-    {% if links and links.length %}
-    <ul class="case-links">
-      {% for link in links %}<li><a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }} <span aria-hidden="true">↗</span></a></li>{% endfor %}
-    </ul>
-    {% endif %}
-
-    <div class="meta-strip">
-      <div class="meta-cell">
-        <div class="label">Role</div>
-        <div class="value">{{ role }}</div>
-      </div>
-      <div class="meta-cell">
-        <div class="label">Timeframe</div>
-        <div class="value">{{ timeframe }}</div>
-      </div>
-      <div class="meta-cell">
-        <div class="label">Stack</div>
-        <div class="value">{{ stack }}</div>
-      </div>
+  {#- Project head: kicker, title and dek on the left; the facts in a list
+        on the right (below on tablets and phones). Every fact is optional
+        and shows only when its front matter field is set — in this order:
+          client:     "Studio XY"                (or { name, url })
+          role:       "Concept & Interaction Design"
+          timeframe:  "2019"
+          team:       - { name: "Jane Doe", role: "Sound", url: "https://…" }
+          stack:      "Figma / Blender"           (or a list)
+          links:      - { label: "Live prototype", url: "https://…" }
+          facts:      - { label: "Awards", value: "…" }   (anything else) #}
+  <section class="project-head grid">
+    <div class="project-intro">
+      <div class="kicker">{{ kicker }}</div>
+      <h1>{{ title }}</h1>
+      {% if dek %}<p class="dek">{{ dek }}</p>{% endif %}
     </div>
+
+    <dl class="case-facts">
+      {% if client %}
+      <div class="fact"><dt>Client</dt><dd>{% if client.url %}<a href="{{ client.url }}" target="_blank" rel="noopener">{{ client.name }}</a>{% else %}{{ client.name or client }}{% endif %}</dd></div>
+      {% endif %}
+      {% if role %}<div class="fact"><dt>Role</dt><dd>{{ role }}</dd></div>{% endif %}
+      {% if timeframe %}<div class="fact"><dt>Timeframe</dt><dd>{{ timeframe }}</dd></div>{% endif %}
+      {% if team and team.length %}
+      <div class="fact"><dt>Team</dt><dd><ul>
+        {% for p in team %}<li>{% if p.url %}<a href="{{ p.url }}" target="_blank" rel="noopener">{{ p.name }}</a>{% else %}{{ p.name or p }}{% endif %}{% if p.role %} <span class="fact-note">{{ p.role }}</span>{% endif %}</li>{% endfor %}
+      </ul></dd></div>
+      {% endif %}
+      {% if stack %}
+      <div class="fact"><dt>Stack</dt><dd><ul>
+        {% for tool in stack | asList %}<li>{{ tool }}</li>{% endfor %}
+      </ul></dd></div>
+      {% endif %}
+      {% if links and links.length %}
+      <div class="fact"><dt>Links</dt><dd><ul>
+        {% for link in links %}<li><a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }} <span aria-hidden="true">↗</span></a></li>{% endfor %}
+      </ul></dd></div>
+      {% endif %}
+      {% for f in facts %}<div class="fact"><dt>{{ f.label }}</dt><dd>{{ f.value }}</dd></div>{% endfor %}
+    </dl>
   </section>
 
   {% if heroImage %}
