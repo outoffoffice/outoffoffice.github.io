@@ -44,6 +44,7 @@
     isOpen = true;
     returnFocus = document.activeElement;
     panel.hidden = false;
+    sheet.scrollTop = 0;
     document.documentElement.classList.add('case-open');
     requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('is-open')));
     // focus goes to the sheet itself (no ring), Tab then reaches the close
@@ -65,6 +66,10 @@
     document.title = homeTitle;
     setTimeout(() => {
       if (isOpen) return;
+      // back to the top while it can still scroll: a hidden (display:none)
+      // sheet ignores scrollTop, so the next project would open where this
+      // one was left
+      sheet.scrollTop = 0;
       panel.hidden = true;
       document.documentElement.classList.remove('case-open');
       content.replaceChildren();
