@@ -1,6 +1,7 @@
 // Case-study sheet: projects open in place instead of as separate pages. A
-// sheet slides in from the right over 7/8 of the screen; the homepage stays
-// visible (dimmed and slightly blurred) in the strip it leaves.
+// sheet slides in from the right, as wide as four (smaller screens: five)
+// columns of the page grid; the homepage stays visible (dimmed and slightly
+// blurred) in the strip it leaves.
 //
 // The sheet shows the <article class="case"> of the real case-study page,
 // fetched on demand. The URL follows (/work/arc/), so back/forward and shared

@@ -112,7 +112,8 @@
     {{ content | safe }}
   </div>
 
-  {% if year %}<div class="case-year">{{ year }}</div>{% endif %}
+  {#- closing line: the current year (of the build), copyright, imprint #}
+  <p class="case-year">{{ site.built | truncate(4, true, "") }} · © Derek Milai Kunstmann · <a href="/impressum/">imprint &amp; privacy</a></p>
 
   </article>
 

@@ -4,7 +4,7 @@
    placeholder gradient when no real image exists yet. */
 
 .image-block{margin:32px 0;}
-.image-block .ph-grid{display:grid; gap:16px;}
+.image-block .ph-grid{display:grid; gap:var(--gap);}  /* the grid's gutter: a pair splits on a column line */
 .image-block.single .ph-grid{grid-template-columns:1fr;}
 .image-block.pair .ph-grid{grid-template-columns:1fr 1fr;}
 .image-block.trio .ph-grid{grid-template-columns:1fr 1fr 1fr;}
@@ -58,7 +58,8 @@
   text-align:center;
 }
 
-@media (max-width: 720px){
+/* by the article's width, so it also applies in the narrower sheet */
+@container case (max-width: 560px){
   .image-block.pair .ph-grid,
   .image-block.trio .ph-grid{grid-template-columns:1fr;}
   .image-block.posters .ph-grid{grid-template-columns:1fr 1fr;}

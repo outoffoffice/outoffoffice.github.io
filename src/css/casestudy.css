@@ -1,7 +1,10 @@
 /* Case-study article. Used twice: by the standalone case-study page
    (layouts/casestudy.njk) and inside the homepage's slide-in sheet, which
    fetches that same page and shows its <article class="case">. Everything
-   is scoped to .case so it can't collide with the homepage's own styles. */
+   is scoped to .case so it can't collide with the homepage's own styles.
+   Its layout follows the article's own width (container queries), not the
+   screen's, so it fits the narrower sheet as well as a full page. */
+.case{container:case / inline-size;}
 
 /* ---- project header: on the page grid — kicker, title and dek across
    columns 1–4, the facts stacked in 5–6. Tablets and phones: the facts
@@ -24,6 +27,11 @@
   margin-top:22px; max-width:560px; font-size:17px; line-height:1.6; color:var(--ink); opacity:0.85;
 }
 
+/* in the homepage sheet the head has the sheet's 4 or 5 page columns:
+   the facts take the last one, title and dek the rest */
+.case-content .project-intro{grid-column:1 / -2;}
+.case-content .case-facts{grid-column:-2 / -1;}
+
 /* facts: mono label over a plain value, one per row between hairlines —
    the same list language as the vita */
 .case .case-facts{grid-column:5 / span 2; display:flex; flex-direction:column;}
@@ -42,12 +50,12 @@
 }
 .case .fact a:hover{color:var(--blue); text-decoration-color:currentColor;}
 
-@media (max-width: 960px){
+@container case (max-width: 760px){
   .case .project-intro{grid-column:1 / -1;}
   .case .case-facts{grid-column:1 / -1; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); column-gap:var(--gap);}
   .case .fact:last-child{border-bottom:0;}
 }
-@media (max-width: 640px){
+@container case (max-width: 520px){
   .case .case-facts{grid-template-columns:repeat(2, minmax(0, 1fr));}
 }
 
@@ -57,6 +65,7 @@
 /* ---- hero image: inset by the same side padding as the text above and
    below it, so its edges line up with them. ---- */
 .case .hero-image{
+  position:relative; z-index:2;  /* above the grain and grid layer, like the head and body */
   width:calc(100% - var(--pad) * 2);
   margin:40px auto 0;
   aspect-ratio:16/9;
@@ -86,11 +95,14 @@
   background:var(--lime); padding:2px 6px; box-decoration-break:clone; -webkit-box-decoration-break:clone;
 }
 
-/* year footnote — quiet dateline under the article body */
+/* closing line — year, copyright and imprint, quiet under the article body */
 .case .case-year{
+  position:relative; z-index:2;
   padding:0 var(--pad) 40px;
   font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.45;
 }
+.case .case-year a{color:inherit; text-decoration:underline; text-underline-offset:0.25em;}
+.case .case-year a:hover{color:var(--blue);}
 
 
 /* ---- lightbox: one image, as large as the screen allows ---- */

@@ -42,7 +42,9 @@
   --paper:#191a1b;
   --ink:#e9e8ef;
   --grid:#3a3b3c;
-  --band:#222324;  /* lifted a touch above the dark paper rather than below it */
+  /* lifted a touch above the dark paper rather than below it; see-through
+     (like paper's) so the grid overlay shows behind a band section too */
+  --band:color-mix(in srgb, var(--ink) 4.5%, transparent);
   --header-bg:rgba(43,43,44,0.94);
 }
 
@@ -289,7 +291,7 @@ h1{
    language as every other image tile on the site (hero-image, card-thumb,
    work-strip). ---- */
 .image-block{margin:32px 0;}
-.image-block .ph-grid{display:grid; gap:16px;}
+.image-block .ph-grid{display:grid; gap:var(--gap);}  /* the grid's gutter: a pair splits on a column line */
 .image-block.single .ph-grid{grid-template-columns:1fr;}
 .image-block.pair .ph-grid{grid-template-columns:1fr 1fr;}
 .image-block.trio .ph-grid{grid-template-columns:1fr 1fr 1fr;}
@@ -329,3 +331,41 @@ h1{
 .pill .dot{width:6px; height:6px; border-radius:50%; display:inline-block;}
 .pill.work .dot{background:var(--blue);}
 .pill.lab .dot{background:var(--lime); box-shadow:0 0 0 1px rgba(21,21,26,0.15);}
+
+/* ---- grid overlay (easter egg, /js/grid-overlay.js): hold R for a
+   second. Just lines, no fills: the column edges and a dashed sub-line
+   --sub inside each column. It sits on the grain's layer (z-index 1),
+   behind the sections (z-index 2) and everything in them, so it shows
+   only where the page is bare. The note is a layer of its own on top. ---- */
+.grid-overlay{
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  opacity:0; transition:opacity 0.3s ease;
+}
+.grid-overlay.is-on{opacity:1;}
+/* the copy inside the project sheet: as wide as the screen and anchored to
+   its right edge (where the sheet ends too), so its lines fall on the same
+   columns as the page's; drawn under the sheet's content */
+.grid-overlay.in-sheet{position:absolute; inset:0 0 0 auto; width:100vw; z-index:auto;}
+.grid-overlay-cols{
+  max-width:1440px; height:100%; margin:0 auto; padding:0 var(--pad);
+  display:grid; grid-template-columns:repeat(var(--cols), minmax(0, 1fr)); column-gap:var(--gap);
+}
+.grid-overlay-cols span{
+  position:relative;
+  border-left:1px solid color-mix(in srgb, var(--blue) 40%, transparent);
+  border-right:1px solid color-mix(in srgb, var(--blue) 40%, transparent);
+}
+.grid-overlay-cols span::before{
+  content:''; position:absolute; top:0; bottom:0; left:var(--sub);
+  border-left:1px dashed color-mix(in srgb, var(--blue) 30%, transparent);
+}
+.grid-note{
+  position:fixed; left:var(--pad); bottom:16px; z-index:90; pointer-events:none;
+  font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--blue);
+  opacity:0; transition:opacity 0.3s ease;
+}
+.grid-note.is-on{opacity:1;}
+@media (max-width: 640px){
+  .grid-overlay-cols{grid-template-columns:minmax(0, 1fr);}
+  .grid-overlay-cols span:nth-child(n+2){display:none;}
+}
