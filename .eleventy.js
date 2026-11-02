@@ -48,6 +48,12 @@ module.exports = function (eleventyConfig) {
     return renderBlock("portrait", [{ src, alt: caption }], caption);
   });
 
+  // {% imageNatural "pfad.jpg", "Bildunterschrift" %} — one image in its own
+  // proportions, uncropped (a square stays square), capped like imagePortrait
+  eleventyConfig.addShortcode("imageNatural", function (src, caption) {
+    return renderBlock("natural", [{ src, alt: caption }], caption);
+  });
+
   // {% imagePair "a.jpg", "b.jpg" %} — two images side by side
   eleventyConfig.addShortcode("imagePair", function (a, b) {
     return renderBlock("pair", [{ src: a }, { src: b }]);
