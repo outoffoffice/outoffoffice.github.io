@@ -2,16 +2,23 @@
    study's own front matter — size: s | m | l (2, 3 or 4 of the 6 grid
    columns, default m) — so the layout follows the content. The tile shows
    cardImage if set (for a page without a hero image), else heroImage, in
-   its own proportions. #}
-{% macro entry(item) %}
+   its own proportions.
+   Contact-sheet style: under the image only its frame number (`no`, its
+   place in the gallery) hangs in the sub-line strip; title and year · type
+   type themselves in on hover, keyboard focus, or (touch) while the tile
+   passes the middle of the screen. #}
+{% macro entry(item, no) %}
 {% set type = "lab" if "lab" in item.data.tags else "work" %}
 {% set size = item.data.size if item.data.size in ["s", "m", "l"] else "m" %}
 <a class="project size-{{ size }}" href="{{ item.url }}" data-type="{{ type }}">
   <div class="project-img duotone">
     {% set cover = item.data.cardImage or item.data.heroImage %}
-    {% if cover %}<img src="/images/{{ cover }}" alt="{{ item.data.heroImageAlt or item.data.title }}" loading="lazy">{% endif %}
+    {% if cover %}<img src="{{ cover | contentImage }}" alt="{{ item.data.heroImageAlt or item.data.title }}" sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 40vw">{% endif %}
   </div>
-  <h3 class="project-title">{{ item.data.title }}</h3>
-  <div class="project-meta">{{ item.data.timeframe }}</div>
+  <div class="project-caption">
+    <span class="project-no" aria-hidden="true">{{ "0" ~ no if no < 10 else no }}</span>
+    <h3 class="project-title">{{ item.data.title }}</h3>
+    <span class="project-meta">{{ item.data.year }}{% if item.data.type %} · {{ item.data.type }}{% endif %}</span>
+  </div>
 </a>
 {% endmacro %}

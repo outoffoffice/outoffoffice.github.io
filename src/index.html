@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <script>
   try {
+    // a choice made with the footer toggle wins; otherwise follow the system
     var t = localStorage.getItem('theme');
-    if (t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.setAttribute('data-theme', 'dark');
   } catch (e) {}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,12 +23,12 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="OutOff — Derek Milai, Creative Technologist">
 <meta property="og:description" content="OutOff — Derek Milai, creative technologist and designer working at the seam between human and machine. A collection of case studies in interaction design, prototyping, and applied technology.">
-<meta property="og:image" content="https://outoffoffice.github.io/images/liqpix/liqpix_hero.png">
+<meta property="og:image" content="{% shareImage site.image %}">
 <meta property="og:url" content="https://outoffoffice.github.io/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="OutOff — Derek Milai, Creative Technologist">
 <meta name="twitter:description" content="OutOff — Derek Milai, creative technologist and designer working at the seam between human and machine. A collection of case studies in interaction design, prototyping, and applied technology.">
-<meta name="twitter:image" content="https://outoffoffice.github.io/images/liqpix/liqpix_hero.png">
+<meta name="twitter:image" content="{% shareImage site.image %}">
 <script>
   // Tab title: a fresh OutOff_ pun each time the page loads.
   var titles = [
@@ -40,415 +41,7 @@
 <link rel="stylesheet" href="/css/shared.css?v={{ site.version }}">
 <link rel="stylesheet" href="/css/casestudy.css?v={{ site.version }}">
 <link rel="stylesheet" href="/css/image-blocks.css?v={{ site.version }}">
-<style>
-  .wrap{position:relative; max-width:100vw; overflow-x:clip; min-height:100vh; display:flex; flex-direction:column;}
-  /* .wrap is a flex column (for the sticky footer), so .content-col is a
-     flex item here — explicit align-self:center keeps it flush with
-     header/footer's own (non-flex) centered .content-col. */
-  .content-col{align-self:center; width:100%;}
-
-  /* ---- one-pager sections: each sits on the 6-column grid, inset by the
-     page margin, and is at least one screen tall (below the sticky header),
-     so the page reads section after section. scroll-margin keeps jumps
-     clear of the header; gentle (proximity) snapping settles on a
-     section's start when a scroll ends close to one.
-     Every section opens with the same small mono label, aligned to grid
-     column 1, with its content laid out on the grid below. Areas are told
-     apart by the
-     background — .band gives a section a full-bleed, slightly darker
-     (--band) tone; the box-shadow + clip-path pair stretches it past the
-     centered content column to both window edges. ---- */
-  html{scroll-snap-type:y proximity;}
-  /* the page's end is a snap point too, so stopping at the footer stays
-     there instead of being pulled back up to the last section's start */
-  .site-footer{scroll-snap-align:end;}
-  .section{
-    position:relative; z-index:2; padding:0 var(--pad);
-    min-height:calc(100vh - var(--header-h)); min-height:calc(100svh - var(--header-h));
-    scroll-margin-top:var(--header-h); scroll-snap-align:start;
-  }
-  .band{
-    background:var(--band);
-    box-shadow:0 0 0 100vmax var(--band); clip-path:inset(0 -100vmax);
-  }
-  .section-label{
-    grid-column:1 / span 3; align-self:end; margin-bottom:40px;
-    display:flex; align-items:center; gap:10px;
-    font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:400;
-    letter-spacing:0.02em; opacity:0.6;
-  }
-  .section-label::before{content:''; width:14px; height:1px; background:var(--ink); opacity:0.5;}
-
-  /* ---- intro: fills the first screen. Claim near the top, the section
-     index pinned to the bottom so both are visible without scrolling. ---- */
-  .intro{
-    display:flex; flex-direction:column;
-    padding-top:clamp(48px, 11vh, 128px); padding-bottom:48px;
-  }
-  .intro-claim{grid-column:1 / span 5;}
-  .eyebrow{
-    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--blue);
-    display:flex; align-items:center; gap:10px; margin-bottom:32px;
-  }
-  .eyebrow::before{content:''; width:14px; height:1px; background:var(--ink); opacity:0.5;}
-
-  h1{max-width:960px; font-weight:700; line-height:1.1;}
-  h1 .accent{color:var(--blue);}
-  h1 .mark{position:relative; display:inline-block;}
-  h1 .mark::after{
-    content:''; position:absolute; left:-2px; right:-2px; bottom:-0.2px; height: 8px; z-index:-1;
-    background:var(--lime); transform:skewX(-6deg) scaleX(0); transform-origin:left;
-    transition:transform 0.4s ease-out;
-  }
-  /* .revealed is added once the scramble decode finishes, so the underline
-     only draws itself in after "Understanding" resolves. */
-  h1 .mark.revealed::after{transform:skewX(-6deg) scaleX(1);}
-  /* mark-real stays in normal flow and reserves the exact final layout box;
-     mark-scramble is positioned on top of it and out of flow, so whatever
-     random characters it shows can never reflow the rest of the h1 line.
-     white-space:nowrap keeps the scrambled string on one line even when it
-     happens to be wider than the reserved box (symbols vary a lot in
-     width) — without it, the browser would wrap it inside the box and it
-     could visually spill onto the next line. */
-  h1 .mark-scramble{position:absolute; inset:0; visibility:hidden; white-space:nowrap; overflow:hidden;}
-
-
-  .intro-index{margin-top:auto; padding-top:56px;}
-  .index-nav{grid-column:1 / span 2; display:flex; flex-direction:column; gap:0;}
-  .index-nav-row{
-    display:flex; align-items:baseline;
-    padding:10px 0;
-    text-decoration:none; color:var(--ink);
-    transition:padding-left 0.2s ease, color 0.2s ease;
-  }
-  /* it's a <nav>, but without the header links' lime underline */
-  .index-nav-row::after{content:none;}
-  .index-nav-row .index-num{
-    font-family:'JetBrains Mono', monospace; font-size:14px;
-    opacity:0.4; width:var(--sub); flex-shrink:0;  /* hangs before the sub-line */
-  }
-  .index-nav-row .index-label{
-    font-family:'Montserrat', sans-serif; font-weight:600; font-size:clamp(24px, 3vw, 36px);
-    letter-spacing:-0.01em;
-  }
-  @media (hover:hover){
-    .index-nav-row:hover{padding-left:14px;}
-    .index-nav-row:hover .index-num{opacity:1; color:var(--blue);}
-    .index-nav-row:hover .index-label{color:var(--blue);}
-  }
-
-  /* ---- blue monochrome for image tiles: the image goes greyscale and a
-     --blue layer on top (screen blend) turns its darks blue while lights
-     stay light — a blue/white duotone. Project tiles fade back to their
-     real colors on hover, or on touch screens (no hover) while they pass
-     through the middle of the screen (.in-view, set by the script below).
-     The portrait (data-mono) stays blue. ---- */
-  .duotone{position:relative;}
-  .duotone img{filter:grayscale(100%) contrast(1.05); transition:filter 0.5s ease;}
-  .duotone::after{
-    content:''; position:absolute; inset:0; pointer-events:none;
-    background:var(--blue); mix-blend-mode:screen;
-    transition:opacity 0.5s ease;
-  }
-  .project:focus-visible .duotone img, .project.in-view .duotone img{filter:none;}
-  .project:focus-visible .duotone::after, .project.in-view .duotone::after{opacity:0;}
-  @media (hover:hover){
-    .project:hover .duotone img{filter:none;}
-    .project:hover .duotone::after{opacity:0;}
-  }
-
-  /* ---- about: portrait in columns 1–2, the text right beside it in
-     column 3 on, sitting on the portrait's bottom edge like a caption;
-     contact lives in the footer ---- */
-  .about{display:flex; flex-direction:column; justify-content:center; padding-top:80px; padding-bottom:80px;}
-  .about-grid{row-gap:40px;}
-  .about-photo{grid-column:1 / span 2; aspect-ratio:994 / 1304; overflow:hidden; background:#191a1b;}
-  .about-photo img{width:100%; height:100%; object-fit:cover; display:block;}
-  .about-body{grid-column:3 / span 3; align-self:end; display:flex; flex-direction:column; gap:22px;}
-  .about-title{
-    font-family:'Montserrat', sans-serif; font-weight:700;
-    font-size:clamp(26px, 2.6vw, 36px); line-height:1.15; letter-spacing:-0.015em;
-    margin-bottom:6px;
-  }
-  .about-body p:not(.about-title){font-size:17px; line-height:1.65; opacity:0.75; max-width:48ch;}
-  .about-more{
-    align-self:flex-start; font-family:'JetBrains Mono', monospace; font-size:12px;
-    color:var(--ink); text-decoration:underline; text-underline-offset:0.3em;
-    text-decoration-color:color-mix(in srgb, var(--ink) 35%, transparent);
-  }
-  .about-more:hover{color:var(--blue); text-decoration-color:currentColor;}
-
-  /* ---- projects: darker band, label + filter, then the gallery ---- */
-  /* (screen-tall like every section, so a jump here lands at its top even
-     when the filter leaves only a few or no tiles) */
-  .projects{padding-top:96px; padding-bottom:140px;}
-  .work-controls{
-    grid-column:4 / -1; justify-self:end; align-self:end; margin-bottom:40px;
-    display:flex; align-items:baseline; gap:40px;
-  }
-  .filters{display:flex; gap:22px; font-family:'JetBrains Mono', monospace; font-size:12px;}
-  .filters button, .idx-group button{
-    font:inherit; background:none; border:none; padding:0 0 4px; cursor:pointer;
-    color:var(--ink); opacity:0.45; position:relative; transition:opacity 0.2s ease;
-  }
-  .filters button:hover, .idx-group button:hover{opacity:0.85;}
-  .filters button[aria-pressed="true"], .idx-group button[aria-pressed="true"]{opacity:1;}
-  .filters button[aria-pressed="true"]::after, .idx-group button[aria-pressed="true"]::after{
-    content:''; position:absolute; left:0; right:0; bottom:0; height:1px; background:var(--ink);
-  }
-  /* keyboard focus, wherever it lands on the page's own controls */
-  .filters button:focus-visible, .idx-group button:focus-visible,
-  .idx-toggle:focus-visible, .idx-search:focus-visible,
-  .project:focus-visible, a.idx-row:focus-visible{
-    outline:2px solid var(--blue); outline-offset:4px; opacity:1;
-  }
-
-  /* Gallery: the page grid itself. Each entry spans as many columns as its
-     case study asks for (size s / m / l → 2 / 3 / 4) and they flow in
-     newest-first order; small tiles sit on the bottom line of their row,
-     larger ones hang from the top, which gives the editorial rhythm. */
-  .gallery{margin-top:24px; row-gap:72px; align-items:start;}
-  .project{
-    display:grid; grid-template-columns:minmax(0, 1fr) max-content;
-    grid-template-areas:"img img" "title meta"; gap:10px 16px;
-    color:var(--ink); text-decoration:none;
-  }
-  .project[hidden]{display:none;}
-  .project.size-s{grid-column:span 2; align-self:end;}
-  .project.size-m{grid-column:span 3;}
-  .project.size-l{grid-column:span 4;}
-
-  /* each image keeps its own proportions (a poster stays tall, a screen
-     wide), which loosens the gallery's rhythm; a tile without an image
-     falls back to a 4:3 placeholder */
-  .project-img{
-    grid-area:img; overflow:hidden;
-    background:color-mix(in srgb, var(--ink) 8%, transparent);
-  }
-  .project-img:not(:has(img)){aspect-ratio:4/3;}
-  .project-img img{width:100%; height:auto; display:block;}
-  @media (hover:hover){
-    .project:hover .project-title{color:var(--blue);}
-  }
-  .project-title{
-    grid-area:title; font-family:'Inter', sans-serif; font-weight:500;
-    font-size:15px; line-height:1.35; transition:color 0.2s ease;
-  }
-  .project-meta{grid-area:meta; padding-top:1px; font-size:13px; opacity:0.5; text-align:right;}
-  .empty-state{margin-top:24px; font-family:'JetBrains Mono', monospace; font-size:13px; opacity:0.55;}
-
-  /* ---- index: an optional list view of every project (from
-     src/data/projects.json), folded away above the gallery and opened with
-     the "index" toggle next to the filter. Rows reuse the page grid's
-     column lines (year | title + summary | type | role). ---- */
-  .idx-toggle{
-    font-family:'JetBrains Mono', monospace; font-size:12px;
-    background:none; border:none; padding:0 0 4px; cursor:pointer; color:var(--ink);
-    display:inline-flex; align-items:baseline; gap:8px;
-  }
-  .idx-toggle .idx-plus{display:inline-block; transition:transform 0.3s ease;}
-  .idx-toggle[aria-expanded="true"] .idx-plus{transform:rotate(45deg);}
-  @media (hover:hover){ .idx-toggle:hover{color:var(--blue);} }
-
-  /* folds open by animating its one grid row from 0 to its full height;
-     hidden from tab order and screen readers while closed */
-  .idx-panel{
-    display:grid; grid-template-rows:0fr; visibility:hidden;
-    transition:grid-template-rows 0.5s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s linear 0.5s;
-  }
-  .idx-panel.is-open{grid-template-rows:1fr; visibility:visible; transition-delay:0s;}
-  .idx-panel-inner{min-height:0; overflow:hidden;}
-  .idx-panel-body{padding:8px 0 72px;}
-
-  .idx-bar{
-    display:flex; flex-wrap:wrap; align-items:baseline; gap:12px 40px; margin-bottom:28px;
-    font-family:'JetBrains Mono', monospace; font-size:12px;
-  }
-  .idx-group{display:flex; flex-wrap:wrap; gap:8px 22px;}
-  .idx-search{
-    font:inherit; color:var(--ink); background:none;
-    border:none; border-bottom:1px solid color-mix(in srgb, var(--ink) 30%, transparent);
-    padding:2px 0 4px; width:180px; border-radius:0;
-  }
-  .idx-search::placeholder{color:var(--ink); opacity:0.4;}
-  .idx-total{margin-left:auto; opacity:0.55;}
-
-  .idx-list ul{list-style:none;}
-  .idx-list li[hidden]{display:none;}
-  .idx-row{
-    padding:18px 0; align-items:baseline; color:var(--ink); text-decoration:none;
-    border-top:1px solid color-mix(in srgb, var(--ink) 14%, transparent);
-  }
-  .idx-list li:last-child .idx-row{border-bottom:1px solid color-mix(in srgb, var(--ink) 14%, transparent);}
-  .idx-row-head{
-    border-top:0; padding:0 0 10px;
-    font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.5;
-  }
-  .idx-year{grid-column:1; font-family:'JetBrains Mono', monospace; font-size:13px;}
-  .idx-name{grid-column:2 / span 2; display:flex; flex-direction:column; gap:4px;}
-  .idx-type{grid-column:4; font-family:'JetBrains Mono', monospace; font-size:12px; opacity:0.7;}
-  .idx-role{grid-column:5 / span 2; font-size:13px; opacity:0.7;}
-  .idx-row-head span{font:inherit; opacity:1;}
-  .idx-title{font-weight:500; font-size:16px; line-height:1.35; transition:color 0.2s ease;}
-  .idx-summary{font-size:14px; line-height:1.5; opacity:0.6; max-width:52ch;}
-  @media (hover:hover){
-    a.idx-row:hover .idx-title{color:var(--blue);}
-  }
-  @media (prefers-reduced-motion: reduce){
-    .idx-panel, .idx-toggle .idx-plus, .idx-title, .duotone img, .duotone::after{transition:none;}
-  }
-
-  /* ---- vita: a short personal greeting, then one column per group
-     (work, studies, …) from src/data/vita.json. Within a group, current
-     entries come first under "current", the rest under "previous". ---- */
-  .vita{padding-top:96px; padding-bottom:140px;}
-  .vita-grid{row-gap:56px;}
-  .vita-intro{grid-column:1 / span 4; display:flex; flex-direction:column; gap:18px;}
-  .vita-intro p{font-size:17px; line-height:1.65; opacity:0.75; max-width:60ch;}
-  .vita-group{grid-column:span 3; display:flex; flex-direction:column; gap:18px;}
-  /* three groups or more: two columns each, side by side */
-  .vita-grid:has(.vita-group ~ .vita-group ~ .vita-group) .vita-group{grid-column:span 2;}
-  .vita-group h3{font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:500;}
-  .vita-sub{font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.5; margin-top:6px;}
-  .vita-list{list-style:none; display:flex; flex-direction:column;}
-  .vita-entry{
-    display:grid; grid-template-columns:minmax(96px, 1fr) 3fr; gap:4px 16px;
-    padding:14px 0; border-top:1px solid color-mix(in srgb, var(--ink) 14%, transparent);
-  }
-  .vita-years{font-family:'JetBrains Mono', monospace; font-size:12px; opacity:0.55; padding-top:2px;}
-  .vita-role{font-weight:500; font-size:15px; line-height:1.4;}
-  .vita-place{display:block; font-size:14px; opacity:0.65; margin-top:2px;}
-  .vita-place a{color:inherit; text-decoration:underline; text-underline-offset:0.25em; text-decoration-color:color-mix(in srgb, var(--ink) 35%, transparent);}
-  .vita-place a:hover{color:var(--blue); text-decoration-color:currentColor;}
-
-  /* ---- tablet: small and medium tiles both take half, large the full row ---- */
-  @media (max-width: 960px){
-    .intro-claim{grid-column:1 / -1;}
-    .index-nav{grid-column:1 / span 3;}
-    .about-photo{grid-column:1 / span 3;}
-    .about-body{grid-column:4 / span 3;}
-    .project.size-s, .project.size-m{grid-column:span 3;}
-    .project.size-l{grid-column:span 6;}
-    .vita-intro{grid-column:1 / -1;}
-    .vita-grid:has(.vita-group ~ .vita-group ~ .vita-group) .vita-group{grid-column:span 3;}
-    .idx-name{grid-column:2 / span 3;}
-    .idx-type{grid-column:5;}
-    .idx-role{grid-column:6;}
-  }
-
-  /* ---- phones: one column, everything stacks ---- */
-  @media (max-width: 640px){
-    .intro{padding-top:56px; padding-bottom:32px;}
-    .about{padding-top:56px; padding-bottom:56px;}
-    .about-photo{max-width:320px;}
-    .section-label{margin-bottom:24px;}
-    .projects{padding-top:64px; padding-bottom:88px;}
-    .gallery{margin-top:32px; row-gap:40px;}
-    .vita{padding-top:64px; padding-bottom:88px;}
-    .work-controls{justify-self:start; margin-bottom:0; flex-wrap:wrap; gap:12px 32px;}
-    .idx-total{margin-left:0;}
-    /* the index's type filter sits right below the gallery filter here:
-       a rule between the two keeps them apart */
-    .idx-panel-body{margin-top:20px; padding-top:20px; border-top:1px solid color-mix(in srgb, var(--ink) 14%, transparent);}
-    .idx-row-head{display:none;}
-    .idx-row{row-gap:6px;}
-    .idx-list li:first-child .idx-row{border-top:0;}
-  }
-  /* ---- case-study sheet (see /js/case-panel.js): slides in from the
-     right, four of the six page columns wide on large screens, five on
-     smaller ones, the whole screen on phones. It sits on the page grid:
-     its edge is a column's right line, and one gutter in, the article
-     starts on the next column's left line and lays itself out on the
-     page's own columns (see .case-content). The
-     strip it leaves shows the homepage, dimmed, and closes the sheet on
-     click. .case-slide carries the motion;
-     .case-sheet inside scrolls. ---- */
-  html.case-open{overflow:hidden;}
-  .case-panel{position:fixed; inset:0; z-index:50;}
-  .case-panel[hidden]{display:none;}
-  .case-scrim{
-    position:absolute; inset:0; cursor:pointer;
-    background:rgba(21,21,26,0.35); opacity:0; transition:opacity 0.6s ease;
-    /* a light blur on the homepage behind, fading in with the dimming */
-    -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px);
-  }
-  /* grain over the blur: the page's own noise, a touch coarser (lower
-     frequency than .grid-bg's 0.85, so each speck comes out bigger) */
-  .case-scrim::before{
-    content:''; position:absolute; inset:0; pointer-events:none; opacity:0.3;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-  .case-slide{
-    /* --sheet-skip: grid columns left visible beside the sheet. --page is
-       the content column (max 1440px), --col one grid column; the sheet
-       starts one gutter before column --sheet-skip + 1. (100vw is exact
-       here: the page has no scrollbar while the sheet is open.) */
-    --sheet-skip:2;
-    --page:min(100vw, 1440px);
-    --col:calc((var(--page) - 2 * var(--pad) - 5 * var(--gap)) / 6);
-    position:absolute; top:0; right:0; bottom:0;
-    width:calc(100vw - (100vw - var(--page)) / 2 - var(--pad) - var(--sheet-skip) * (var(--col) + var(--gap)) + var(--gap));
-    transform:translateX(100%);
-    transition:transform 0.7s cubic-bezier(0.32, 0.72, 0, 1);
-  }
-  .case-panel.is-open .case-scrim{opacity:1;}
-  .case-panel.is-open .case-slide{transform:none;}
-  /* the paper sits on .case-slide with the page's grain over it (same
-     noise and strength as .grid-bg), so the sheet matches the homepage;
-     the sheet itself is transparent and scrolls above the still grain */
-  .case-slide{background:var(--paper); overflow:hidden;}  /* clips the grid overlay's copy (R) */
-  .case-slide::before{
-    content:''; position:absolute; inset:0; pointer-events:none; opacity:0.26;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-  .case-sheet{
-    position:absolute; inset:0; z-index:1;  /* all of it above the grain and grid lines */
-    overflow-y:auto; overscroll-behavior:contain;
-  }
-  /* the article on the page grid: one gutter of margin each side (--pad),
-     so its content spans exactly the sheet's columns, and its own grid
-     (.project-head) has that many (--cols) — every line in the sheet is a
-     line of the page. On screens wider than the content column the sheet
-     also covers the outer margin; the article stays as wide as its columns. */
-  .case-content{
-    --pad:var(--gap);
-    --cols:calc(6 - var(--sheet-skip));
-    max-width:calc((6 - var(--sheet-skip)) * var(--col) + (7 - var(--sheet-skip)) * var(--gap));
-  }
-  /* stays at the sheet's top-left while it scrolls; the negative bottom
-     margin lets the article start underneath it instead of below */
-  /* black circle, white x — the x is two drawn lines rather than a "×"
-     glyph, whose font metrics put it off-center in Safari */
-  .case-close{
-    position:sticky; top:20px; z-index:5; display:block; margin:20px 0 -60px var(--pad);
-    width:40px; height:40px; border:0; border-radius:999px; cursor:pointer;
-    background:#15151a;
-    transition:transform 0.2s ease;
-  }
-  .case-close::before, .case-close::after{
-    content:''; position:absolute; left:50%; top:50%; width:16px; height:1.5px;
-    background:#fff; border-radius:1px;
-    transform:translate(-50%, -50%) rotate(45deg);
-  }
-  .case-close::after{transform:translate(-50%, -50%) rotate(-45deg);}
-  /* on the dark sheet a faint light ring keeps the black circle visible */
-  :root[data-theme="dark"] .case-close{box-shadow:0 0 0 1px rgba(233,232,239,0.25);}
-  .case-close:hover{transform:rotate(90deg);}
-  .case-sheet:focus{outline:none;}
-  .case-close:focus{outline:none;}
-  .case-close:focus-visible{outline:2px solid var(--blue); outline-offset:3px;}
-  @media (max-width: 1280px){
-    .case-slide{--sheet-skip:1;}
-  }
-  /* phones: the sheet takes the full width */
-  @media (max-width: 640px){
-    .case-slide{width:100vw;}
-    .case-content{max-width:none; --pad:inherit; --cols:inherit;}
-  }
-  @media (prefers-reduced-motion: reduce){
-    .case-scrim, .case-slide{transition:none;}
-  }
-</style>
+<link rel="stylesheet" href="/css/home.css?v={{ site.version }}">
 </head>
 <body>
 <div class="wrap">
@@ -502,7 +95,7 @@
     <div class="grid about-grid">
       <h2 class="section-label">about</h2>
       <figure class="about-photo duotone" data-mono>
-        <img src="/images/profile/dissolve-gaussian-picture.png" alt="Portrait of Derek Milai, dissolving into colored pixels" loading="lazy">
+        <img src="{{ 'profile/dissolve-gaussian-picture.png' | contentImage }}" alt="Portrait of Derek Milai, dissolving into colored pixels" sizes="(max-width: 640px) 320px, 30vw">
       </figure>
       <div class="about-body">
         <p class="about-title">Hi, I'm Derek.</p>
@@ -566,7 +159,7 @@
 
     <div class="grid gallery" id="gallery">
       {% for item in collections.projects %}
-        {{ entry(item) }}
+        {{ entry(item, loop.index) }}
       {% endfor %}
     </div>
     <p class="empty-state" id="galleryEmpty"{% if collections.projects.length %} hidden{% endif %}>Nothing published here yet — check back soon.</p>
@@ -611,6 +204,7 @@
   <div class="case-panel" id="casePanel" hidden>
     <div class="case-scrim" data-close></div>
     <div class="case-slide">
+      <div class="case-loader" aria-hidden="true"></div>
       <div class="case-sheet" role="dialog" aria-modal="true" aria-label="Project" tabindex="-1">
         <button type="button" class="case-close" data-close aria-label="Close project"></button>
         <div class="case-content"></div>
@@ -644,8 +238,9 @@
   }
   filterButtons.forEach(btn => btn.addEventListener('click', () => setFilter(btn.dataset.filter)));
 
-  // ---- touch screens: a project tile shows its colors while it passes
-  // through the middle band of the screen (desktop does this on hover) ----
+  // ---- touch screens: a project tile shows its colors and its caption
+  // while it passes through the middle band of the screen (desktop does
+  // this on hover) ----
   if (!window.matchMedia('(hover: hover)').matches && 'IntersectionObserver' in window) {
     const colorBand = new IntersectionObserver((seen) => {
       seen.forEach(e => e.target.classList.toggle('in-view', e.isIntersecting));
@@ -732,9 +327,12 @@
   // mark-scramble is absolutely positioned on top of it, so it's never part
   // of the line's flow and can't shift "through Applied Technology." no
   // matter what random characters appear in it.
+  // With reduced motion the word just stands there, underlined.
   const markRealEl = document.querySelector('h1 .mark-real');
   const markScrambleEl = document.querySelector('h1 .mark-scramble');
-  if (markRealEl && markScrambleEl) {
+  if (markRealEl && reduceMotion) {
+    markRealEl.closest('.mark').classList.add('revealed');
+  } else if (markRealEl && markScrambleEl) {
     const finalText = markRealEl.textContent;
     const scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*+=?/<>{}[]~^';
     const holdDuration = 900;   // cryptic glitch hold before decoding starts

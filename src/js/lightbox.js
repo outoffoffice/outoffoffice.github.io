@@ -1,6 +1,8 @@
 // Lightbox: any image inside a case-study article (on its own page or in
 // the homepage's slide-in sheet) opens as large as the screen allows, with
 // its caption if it has one. Clicking anywhere or Escape closes it.
+// With more than one image in the article it's a gallery: ← / → keys, the
+// arrows under the image, or a swipe step through them (with a counter).
 // On touch screens the image can be zoomed like in a photo app: pinch,
 // double-tap to zoom in on a spot (and back), drag to look around; a single
 // tap closes it while it isn't zoomed.
@@ -10,24 +12,77 @@
   box.hidden = true;
   box.setAttribute('role', 'dialog');
   box.setAttribute('aria-modal', 'true');
-  box.setAttribute('aria-label', 'Enlarged image, click or press Escape to close, pinch to zoom');
+  box.setAttribute('aria-label', 'Enlarged image, click or press Escape to close, arrow keys for the next image, pinch to zoom');
   box.tabIndex = -1;
-  box.innerHTML = '<img alt=""><figcaption></figcaption>';
+  box.innerHTML = '<picture></picture><figcaption></figcaption>'
+    + '<div class="lightbox-bar">'
+    + '<button type="button" class="lightbox-step" data-step="-1" aria-label="Previous image">←</button>'
+    + '<span class="lightbox-count" aria-live="polite"></span>'
+    + '<button type="button" class="lightbox-step" data-step="1" aria-label="Next image">→</button>'
+    + '</div>';
   document.body.appendChild(box);
-  const big = box.querySelector('img');
+  const frame = box.querySelector('picture');
   const caption = box.querySelector('figcaption');
+  const bar = box.querySelector('.lightbox-bar');
+  const count = box.querySelector('.lightbox-count');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let big = null;       // the <img> shown right now
+  let list = [];        // every image of the article
+  let index = 0;
   let returnFocus = null;
 
-  function open(img) {
-    big.src = img.currentSrc || img.src;
-    big.alt = img.alt;
-    const block = img.closest('.image-block');
+  // Shows image i of the list. The page's images come as a <picture> of
+  // compressed copies in several widths (see .eleventy.js); the copy here
+  // gets sizes="100vw", so the browser fetches the copy for the full screen,
+  // not the small one the article shows. `dir` slides it in from that side.
+  function show(i, dir) {
+    index = i;
+    const src = list[i];
+    const pic = src.closest('picture');
+    const img = document.createElement('img');
+    const sources = pic ? Array.from(pic.querySelectorAll('source'), (s) => {
+      const copy = s.cloneNode();
+      copy.sizes = '100vw';
+      return copy;
+    }) : [];
+    if (src.srcset) { img.srcset = src.srcset; img.sizes = '100vw'; }
+    img.src = src.getAttribute('src');
+    img.alt = src.alt;
+    frame.replaceChildren(...sources, img);
+    big = img;
+
+    const block = src.closest('.image-block');
     const text = block && block.querySelector('.ph-caption');
     caption.textContent = text ? text.textContent : '';
     caption.hidden = !caption.textContent;
+    bar.hidden = list.length < 2;
+    count.textContent = `${i + 1} / ${list.length}`;
+    resetZoom();
+    if (dir && !reduceMotion) {
+      img.style.transform = `translateX(${dir * 48}px)`;
+      img.style.opacity = '0';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        img.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+        img.style.transform = '';
+        img.style.opacity = '';
+      }));
+    }
+  }
+  function step(dir) {
+    const next = index + dir;
+    if (next < 0 || next >= list.length) {
+      resetZoom(true);  // at either end: just settle back
+      return;
+    }
+    show(next, dir);
+  }
+
+  function open(img) {
+    const article = img.closest('.case');
+    list = Array.from(article.querySelectorAll('.hero-image img, .case-body img'));
     pointers.clear();
     gesture = null;
-    resetZoom();
+    show(Math.max(0, list.indexOf(img)));
     returnFocus = document.activeElement;
     box.hidden = false;
     requestAnimationFrame(() => box.classList.add('is-open'));
@@ -36,7 +91,7 @@
   function close() {
     if (box.hidden) return;
     box.classList.remove('is-open');
-    setTimeout(() => { box.hidden = true; big.removeAttribute('src'); }, 300);
+    setTimeout(() => { box.hidden = true; frame.replaceChildren(); big = null; }, 300);
     if (returnFocus) returnFocus.focus({ preventScroll: true });
   }
 
@@ -44,19 +99,25 @@
     const img = e.target.closest('.case .hero-image img, .case .case-body img');
     if (img) { e.preventDefault(); open(img); }
   });
+  bar.addEventListener('click', (e) => {
+    e.stopPropagation();  // a click on the bar doesn't close
+    const button = e.target.closest('[data-step]');
+    if (button) step(Number(button.dataset.step));
+  });
   // mouse clicks close it; touch taps are handled with the zoom below
   box.addEventListener('click', () => { if (lastPointer !== 'touch') close(); });
 
-  // ---- zoom on touch ----
-  const MAX = 4, DOUBLE = 2.5;
+  // ---- zoom and swipe on touch ----
+  const MAX = 4, DOUBLE = 2.5, SWIPE = 60;
   const pointers = new Map();
   let scale = 1, tx = 0, ty = 0;
   let gesture = null;            // what the fingers on screen are doing
   let lastPointer = 'mouse', lastTap = 0, tapTimer = null;
 
   function apply(animate) {
+    if (!big) return;
     big.style.transition = animate ? 'transform 0.25s ease' : 'none';
-    big.style.transform = scale === 1 ? '' : `translate(${tx}px, ${ty}px) scale(${scale})`;
+    big.style.transform = scale === 1 && !tx ? '' : `translate(${tx}px, ${ty}px) scale(${scale})`;
     box.classList.toggle('is-zoomed', scale > 1);
   }
   // keeps the image's edges from being pulled in past the screen's
@@ -92,7 +153,7 @@
 
   box.addEventListener('pointerdown', (e) => {
     lastPointer = e.pointerType;
-    if (e.pointerType !== 'touch') return;
+    if (e.pointerType !== 'touch' || e.target.closest('.lightbox-bar') || !big) return;
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     const state = { scale, tx, ty, c: center() };
     if (pointers.size === 2) {
@@ -116,6 +177,10 @@
         tx = gesture.start.tx + dx; ty = gesture.start.ty + dy;
         clampPan();
         apply(false);
+      } else if (list.length > 1 && Math.abs(dx) > Math.abs(dy)) {
+        // not zoomed: the image follows the finger sideways (a swipe)
+        tx = dx;
+        apply(false);
       }
     }
   });
@@ -130,7 +195,16 @@
       return;
     }
     gesture = null;
-    if (pointers.size || !g || g.type !== 'pan' || g.moved || Date.now() - g.t > 300) return;
+    if (pointers.size || !g || g.type !== 'pan') return;
+    // a swipe at normal size: far enough sideways steps to the next image,
+    // otherwise the image settles back
+    if (g.moved && scale === 1) {
+      const dx = e.clientX - g.x, dy = e.clientY - g.y;
+      if (list.length > 1 && Math.abs(dx) > SWIPE && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1);
+      else resetZoom(true);
+      return;
+    }
+    if (g.moved || Date.now() - g.t > 300) return;
     // a tap: a second one soon after zooms in (or back out), a single
     // one closes when nothing is zoomed
     const now = Date.now();
@@ -150,8 +224,16 @@
   }
   box.addEventListener('pointerup', pointerEnd);
   box.addEventListener('pointercancel', pointerEnd);
-  // Escape closes the lightbox first; the sheet behind stays open.
+
+  // Escape closes the lightbox first (the sheet behind stays open);
+  // ← / → step through the article's images.
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !box.hidden) { e.stopImmediatePropagation(); close(); }
+    if (box.hidden) return;
+    if (e.key === 'Escape') { e.stopImmediatePropagation(); close(); }
+    else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      step(e.key === 'ArrowRight' ? 1 : -1);
+    }
   }, true);
 })();

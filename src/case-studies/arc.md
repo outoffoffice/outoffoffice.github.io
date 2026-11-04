@@ -1,9 +1,6 @@
 ---
-layout: layouts/casestudy.njk
-permalink: /work/arc/
 tags: work
 title: Arc
-kicker: case study — arc
 dek: A color-coded music system — physical NFC tokens trained on your own listening habits, tapped to a phone without ever opening an app. Choosing what to hear by feeling instead of a search term.
 role: Concept, Product & Interaction Design
 type: personal
@@ -13,7 +10,6 @@ size: s
 stack: Figma / 3D Print / Blender
 heroImage: arc_vibe/arc_hero.png
 heroImageAlt: An Arc Vibe token next to the current-vibe screen on a phone
-year: 2026
 ---
 
 ## The Seeding Idea

@@ -1,9 +1,6 @@
 ---
-layout: layouts/casestudy.njk
-permalink: /work/beyond-the-engine/
 tags: work
 title: Beyond the Engine
-kicker: case study — 01 / 05
 dek: Interface design for the automotive world — from icons to full system logic. Close collaboration with major OEMs, spanning concept, prototyping, and series development for driver assistance and entertainment.
 role: Interaction / Prototyping
 type: client
@@ -12,8 +9,7 @@ timeframe: 04/2021 – today
 size: l
 stack: Figma / Protopie / VR
 heroImage: carhmi/hmi_hero.png
-heroImageAlt: Project hero
-year: 2021 – today
+heroImageAlt: A curved digital instrument cluster in a car cockpit, showing speed, driving assistance and the car ahead, framed by glowing blue light bars
 ---
 
 ## From Hotwheels to HMI

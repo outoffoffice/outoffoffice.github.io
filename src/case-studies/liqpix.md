@@ -1,9 +1,6 @@
 ---
-layout: layouts/casestudy.njk
-permalink: /work/liqpix/
 tags: work
 title: "Tissue in Blue: A Wall Piece for a Treatment Room"
-kicker: case study — liqpix
 dek: A large-scale wall piece for a physiotherapy and osteopathy treatment room — an abstract image built not by depicting tissue, but by tracing the principle it forms by, smallest unit into structure, structure into wholeness.
 role: Concept, Design & Image Production
 type: client
@@ -12,8 +9,7 @@ timeframe: 2022
 size: m
 stack: Photoshop
 heroImage: liqpix/liqpix_hero.png
-heroImageAlt: Project hero
-year: 2022
+heroImageAlt: Detail of the wall piece, a turquoise structure of cell-like fragments of light on deep blue
 ---
 
 ## 1. Challenge

@@ -21,7 +21,15 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
+          cache: npm
+      # compressed images from earlier deploys: only new or changed images
+      # in /content get encoded again, which keeps the build quick
+      - uses: actions/cache@v4
+        with:
+          path: _site/img
+          key: img-${{ hashFiles('content/**', '.eleventy.js') }}
+          restore-keys: img-
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3

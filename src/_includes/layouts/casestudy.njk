@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <script>
   try {
+    // a choice made with the footer toggle wins; otherwise follow the system
     var t = localStorage.getItem('theme');
-    if (t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.setAttribute('data-theme', 'dark');
   } catch (e) {}
   // With JS, a case study never opens as a page of its own: hand this path
   // to the homepage, which shows it in its slide-in sheet (see
@@ -31,12 +32,12 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="{{ title }}">
 <meta property="og:description" content="{{ dek or site.description }}">
-<meta property="og:image" content="{% if heroImage or cardImage %}{{ site.url }}/images/{{ heroImage or cardImage }}{% else %}{{ site.url }}/{{ site.image }}{% endif %}">
+<meta property="og:image" content="{% shareImage heroImage or cardImage or site.image %}">
 <meta property="og:url" content="{{ site.url }}{{ page.url }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ title }}">
 <meta name="twitter:description" content="{{ dek or site.description }}">
-<meta name="twitter:image" content="{% if heroImage or cardImage %}{{ site.url }}/images/{{ heroImage or cardImage }}{% else %}{{ site.url }}/{{ site.image }}{% endif %}">
+<meta name="twitter:image" content="{% shareImage heroImage or cardImage or site.image %}">
 <link rel="stylesheet" href="/css/fonts.css?v={{ site.version }}">
 <link rel="stylesheet" href="/css/shared.css?v={{ site.version }}">
 <link rel="stylesheet" href="/css/image-blocks.css?v={{ site.version }}">
@@ -104,7 +105,7 @@
 
   {% if heroImage %}
   <div class="hero-image">
-    <span><img src="/images/{{ heroImage }}" alt="{{ heroImageAlt or title }}"></span>
+    <span><img src="{{ heroImage | contentImage }}" alt="{{ heroImageAlt or title }}" sizes="(max-width: 640px) 100vw, 960px"></span>
   </div>
   {% endif %}
 

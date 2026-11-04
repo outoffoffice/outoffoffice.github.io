@@ -1,13 +1,18 @@
 {
   "name": "outoff-portfolio",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "description": "OutOff portfolio site, built with Eleventy.",
   "scripts": {
     "build": "eleventy",
-    "start": "eleventy --serve"
+    "start": "eleventy --serve",
+    "clean": "rm -rf _site"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.1",
-    "markdown-it": "^14.1.0"
+    "@11ty/eleventy": "^3.1.8",
+    "@11ty/eleventy-img": "^7.1.1",
+    "markdown-it": "^15.0.3"
   }
 }

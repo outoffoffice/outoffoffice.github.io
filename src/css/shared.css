@@ -1,10 +1,9 @@
-/* OutOff — shared design tokens & structural components.
-   Consolidated out of portfolio-preview.html / beyond-the-engine.html /
-   work-index-preview 3.html / contact-preview.html — nothing added here is
-   new, this is exactly what those pages already had duplicated verbatim.
-   Page-specific layout (hero, sections, cards, terminal, etc.) stays in
-   each page's own <style> block, loaded after this file so it can still
-   add small local overrides (e.g. h1 max-width, footer margin-top:auto). */
+/* OutOff — the base every page shares: design tokens (colors, grid),
+   color modes, the grid, header, tab bar, footer and image blocks.
+   On top of it: home.css (the homepage's sections, gallery, index, vita
+   and project sheet), casestudy.css (the project article) and
+   image-blocks.css (layouts for images inside an article). Small pages
+   (404, imprint) keep their few extra rules in their own <style>. */
 
 :root{
   --paper:#e9e8ef;
@@ -21,6 +20,10 @@
   --band:color-mix(in srgb, var(--ink) 5%, transparent);
   /* sticky header: an off-white of its own, barely see-through */
   --header-bg:rgba(227,226,231,0.94);
+
+  /* small secondary text (labels, years, captions): dimmed, but still
+     readable — at least 4.5:1 contrast on paper and on dark */
+  --muted:0.65;
 
   --cols:6;
   --gap:24px;
@@ -114,7 +117,23 @@ header > .header-inner{position:relative; z-index:1;}
   font-family:'Montserrat', sans-serif; font-weight:900; letter-spacing:-0.02em;
   display:inline-block; transform:skewX(-8deg);
 }
-.logo .us{color:var(--blue); display:inline-block; transform:skewX(-8deg);}
+.logo .us{color:var(--blue); display:inline-block; transform:skewX(-8deg); animation:cursor-blink 1.6s steps(1) infinite;}
+/* a calm text-cursor blink: the logo's "_", and the "_" a project title
+   ends with once it has typed itself in (home.css) */
+@keyframes cursor-blink{0%, 60%{opacity:1;} 60.01%, 100%{opacity:0;}}
+
+/* "reduce motion" in the system settings: nothing on the site moves —
+   no blinking, pulsing, sliding or typing; changes happen at once. (The
+   headline's scramble is skipped in its script; a few rules elsewhere
+   say what a still element shows instead, e.g. the title's "_".) */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation:none !important;
+    transition-duration:0.01ms !important;
+    transition-delay:0s !important;
+    scroll-behavior:auto !important;
+  }
+}
 nav{display:flex; gap:28px; font-family:'JetBrains Mono', monospace; font-size:13px; flex-wrap:wrap;}
 nav a{color:var(--ink); text-decoration:none; position:relative;}
 nav a::after{content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px; background:var(--lime); transition:width 0.25s ease;}
@@ -211,14 +230,14 @@ nav.tabs.open.has-pill .tab-pill, nav.tabs.open.in-group .tab-group{opacity:1;}
   position:absolute; top:110px; z-index:3;
   right: max(40px, calc((100% - 1440px) / 2 + 40px));
   font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink);
-  opacity:0.5; text-align:right; line-height:1.6;
+  opacity:var(--muted); text-align:right; line-height:1.6;
   display:none;
 }
 .viewport-readout{
   position:absolute; top:110px; z-index:3;
   left: max(40px, calc((100% - 1440px) / 2 + 40px));
   font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink);
-  opacity:0.5; text-align:left; line-height:1.6;
+  opacity:var(--muted); text-align:left; line-height:1.6;
   display:none;
 }
 @media (min-width: 800px){
@@ -273,7 +292,7 @@ h1{
 .theme-toggle{display:flex; gap:14px; font-family:'JetBrains Mono', monospace; font-size:11.5px;}
 .theme-toggle button{
   font:inherit; background:none; border:none; padding:0;
-  color:#fff; cursor:pointer; opacity:0.6; position:relative;
+  color:#fff; cursor:pointer; opacity:0.8; position:relative;  /* still readable on the blue */
 }
 .theme-toggle button::after{
   content:''; position:absolute; left:0; bottom:-3px; width:0; height:1px;
@@ -308,13 +327,13 @@ h1{
 .image-block.single .ph{aspect-ratio:16/9;}
 
 .image-block .ph-label{
-  font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.5; z-index:1; position:relative;
+  font-family:'JetBrains Mono', monospace; font-size:11px; opacity:var(--muted); z-index:1; position:relative;
 }
 .image-block .ph img{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:2;
 }
 .image-block .ph-caption{
-  margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:11.5px; opacity:0.55; text-align:center;
+  margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:11.5px; opacity:var(--muted); text-align:left;
 }
 
 @media (max-width: 720px){
@@ -359,6 +378,20 @@ h1{
   content:''; position:absolute; top:0; bottom:0; left:var(--sub);
   border-left:1px dashed color-mix(in srgb, var(--blue) 30%, transparent);
 }
+/* column numbers, just under the header (behind the content like the lines) */
+.grid-overlay-cols i{
+  position:absolute; top:calc(var(--header-h) + 10px); left:calc(var(--sub) + 6px);
+  font:normal 10px 'JetBrains Mono', monospace; color:color-mix(in srgb, var(--blue) 70%, transparent);
+}
+/* crosshair on the pointer: two hairlines through it — over the content
+   (it is the pointer), but faint, and never in the way of a click; mouse
+   only */
+.grid-cross{position:fixed; inset:0; z-index:60; pointer-events:none; display:none;}
+.grid-cross.is-on{display:block;}
+@media (hover:none){ .grid-cross.is-on{display:none;} }
+.grid-cross-x, .grid-cross-y{position:absolute; background:color-mix(in srgb, var(--blue) 35%, transparent);}
+.grid-cross-x{left:0; right:0; top:var(--y, -10px); height:1px;}
+.grid-cross-y{top:0; bottom:0; left:var(--x, -10px); width:1px;}
 .grid-note{
   position:fixed; left:var(--pad); bottom:16px; z-index:90; pointer-events:none;
   font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--blue);

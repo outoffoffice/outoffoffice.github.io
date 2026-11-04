@@ -40,10 +40,10 @@
   border-top:1px solid color-mix(in srgb, var(--ink) 14%, transparent);
 }
 .case .fact:last-child{border-bottom:1px solid color-mix(in srgb, var(--ink) 14%, transparent);}
-.case .fact dt{font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.55; text-transform:lowercase;}
+.case .fact dt{font-family:'JetBrains Mono', monospace; font-size:11px; opacity:var(--muted); text-transform:lowercase;}
 .case .fact dd{font-size:14px; line-height:1.5;}
 .case .fact ul{list-style:none;}
-.case .fact .fact-note{opacity:0.55;}
+.case .fact .fact-note{opacity:var(--muted);}
 .case .fact a{
   color:inherit; text-decoration:underline; text-underline-offset:0.25em;
   text-decoration-color:color-mix(in srgb, var(--ink) 35%, transparent);
@@ -99,13 +99,14 @@
 .case .case-year{
   position:relative; z-index:2;
   padding:0 var(--pad) 40px;
-  font-family:'JetBrains Mono', monospace; font-size:11px; opacity:0.45;
+  font-family:'JetBrains Mono', monospace; font-size:11px; opacity:var(--muted);
 }
 .case .case-year a{color:inherit; text-decoration:underline; text-underline-offset:0.25em;}
 .case .case-year a:hover{color:var(--blue);}
 
 
-/* ---- lightbox: one image, as large as the screen allows ---- */
+/* ---- lightbox: one image, as large as the screen allows; with several
+   in the article, a bar with ← count → under it ---- */
 .lightbox{
   position:fixed; inset:0; z-index:100;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
@@ -119,17 +120,28 @@
   content:''; position:absolute; inset:0; pointer-events:none; opacity:0.3;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-.lightbox img, .lightbox figcaption{position:relative; z-index:1;}
+.lightbox img, .lightbox figcaption, .lightbox-bar{position:relative; z-index:1;}
+/* the <picture> wrapper steps aside, so the image sizes against the box */
+.lightbox picture{display:contents;}
 .lightbox[hidden]{display:none;}
 .lightbox.is-open{opacity:1;}
 .lightbox:focus{outline:none;}
-.lightbox img{max-width:100%; max-height:calc(100% - 40px); object-fit:contain; display:block;}
-.lightbox figcaption{font-family:'JetBrains Mono', monospace; font-size:11.5px; color:rgba(255,255,255,0.7); text-align:center;}
+.lightbox img{max-width:100%; max-height:calc(100% - 72px); object-fit:contain; display:block;}
+.lightbox figcaption{font-family:'JetBrains Mono', monospace; font-size:11.5px; color:rgba(255,255,255,0.75); text-align:center;}
+.lightbox-bar{display:flex; align-items:center; gap:14px; font-family:'JetBrains Mono', monospace; font-size:12px; color:rgba(255,255,255,0.75);}
+.lightbox-bar[hidden]{display:none;}
+.lightbox-step{
+  font:inherit; font-size:16px; color:#fff; background:none; border:0; cursor:pointer;
+  padding:6px 10px;  /* a comfortable target for a thumb */
+  opacity:0.75; transition:opacity 0.2s ease;
+}
+.lightbox-step:hover{opacity:1;}
+.lightbox-step:focus-visible{outline:2px solid #fff; outline-offset:2px;}
 /* touch: the page's own pinch/scroll is switched off in here, the
    lightbox does the zooming itself (see /js/lightbox.js) */
 .lightbox{touch-action:none;}
 .lightbox img{will-change:transform;}
-.lightbox.is-zoomed figcaption{opacity:0; transition:opacity 0.2s ease;}
+.lightbox.is-zoomed figcaption, .lightbox.is-zoomed .lightbox-bar{opacity:0; transition:opacity 0.2s ease;}
 /* phones: the image runs edge to edge */
 @media (max-width: 640px){
   .lightbox{padding-left:0; padding-right:0;}

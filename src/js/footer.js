@@ -10,7 +10,7 @@
   });
 
   // Color-mode toggle, synced with the anti-flash script in each page's
-  // <head> and persisted in localStorage.
+  // <head> (which starts in the system's mode) and persisted in localStorage.
   const themeButtons = document.querySelectorAll('.theme-toggle button');
   function applyTheme(mode, persist) {
     if (mode === 'paper') document.documentElement.removeAttribute('data-theme');
@@ -22,4 +22,11 @@
   }
   applyTheme(document.documentElement.getAttribute('data-theme') || 'paper', false);
   themeButtons.forEach(btn => btn.addEventListener('click', () => applyTheme(btn.dataset.mode, true)));
+  // Until a mode is picked here, the page follows the system's setting,
+  // also when it changes while the page is open (e.g. at sunset).
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    let stored = null;
+    try { stored = localStorage.getItem('theme'); } catch (err) {}
+    if (!stored) applyTheme(e.matches ? 'dark' : 'paper', false);
+  });
 })();

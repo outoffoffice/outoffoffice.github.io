@@ -21,36 +21,52 @@
   let homeUrl = location.pathname + location.hash;
 
   // ---- loading a case into the sheet ----
-  async function load(path) {
+  // The sheet opens right away and shows a pulsing lime dot while the case
+  // loads (.is-loading); the article goes in once it's there. `loadId`
+  // tracks the newest request, so a slower earlier one, or one for a sheet
+  // closed in the meantime, is dropped.
+  let loadId = 0;
+  async function fetchCase(path) {
     const res = await fetch(path);
     if (!res.ok) throw new Error(res.status);
     const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
     const article = doc.querySelector('article.case');
     if (!article) throw new Error('no article');
     article.classList.remove('content-col');
-    content.replaceChildren(document.importNode(article, true));
-    document.title = doc.title || homeTitle;
-    sheet.scrollTop = 0;
+    return { article, title: doc.title };
+  }
+  function setLoading(on) {
+    panel.classList.toggle('is-loading', on);
+    sheet.setAttribute('aria-busy', String(on));
   }
 
   async function open(path, { push = true } = {}) {
+    const id = ++loadId;
+    setLoading(true);
+    if (!isOpen) {
+      isOpen = true;
+      returnFocus = document.activeElement;
+      panel.hidden = false;
+      sheet.scrollTop = 0;
+      document.documentElement.classList.add('case-open');
+      requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('is-open')));
+      // focus goes to the sheet itself (no ring), Tab then reaches the close
+      // button; focusing the button directly made Safari draw its focus ring
+      sheet.focus({ preventScroll: true });
+    }
+    let loaded;
     try {
-      await load(path);
+      loaded = await fetchCase(path);
     } catch (e) {
-      location.href = path + '?solo';  // fall back to the plain page
+      if (id === loadId) location.href = path + '?solo';  // fall back to the plain page
       return;
     }
-    if (push) history.pushState({ case: path }, '', path);
-    if (isOpen) return;
-    isOpen = true;
-    returnFocus = document.activeElement;
-    panel.hidden = false;
+    if (id !== loadId || !isOpen) return;
+    content.replaceChildren(document.importNode(loaded.article, true));
+    document.title = loaded.title || homeTitle;
     sheet.scrollTop = 0;
-    document.documentElement.classList.add('case-open');
-    requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('is-open')));
-    // focus goes to the sheet itself (no ring), Tab then reaches the close
-    // button; focusing the button directly made Safari draw its focus ring
-    sheet.focus({ preventScroll: true });
+    setLoading(false);
+    if (push) history.pushState({ case: path }, '', path);
   }
 
   // Closing steps back through history when the sheet put an entry there
@@ -62,6 +78,8 @@
   function close({ pop = false } = {}) {
     if (!isOpen) return;
     isOpen = false;
+    loadId++;  // a case still loading won't open anymore
+    setLoading(false);
     if (!pop) history.replaceState(null, '', homeUrl);
     panel.classList.remove('is-open');
     document.title = homeTitle;

@@ -1,9 +1,6 @@
 ---
-layout: layouts/casestudy.njk
-permalink: /lab/bureau-dina4/
 tags: lab
 title: Bureau DINA4 Poster Series
-kicker: lab — bureau dina4
 dek: A self-initiated poster series from my student years — a playground to let off some visual steam, one A4 sheet at a time.
 role: Concept & Visual Design
 type: experiment
@@ -13,7 +10,6 @@ size: s
 stack: Adobe Photoshop, Adobe Illustrator
 cardImage: bureau-dina4/BD4_001.png
 heroImageAlt: Poster No 001 of the Bureau DIN A4 series
-year: 2018
 ---
 
 ## A Playground
