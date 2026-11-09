@@ -1,4 +1,4 @@
-ok---
+---
 title: AI Disclaimer
 permalink: /ai-disclaimer/
 ---
@@ -56,9 +56,10 @@ permalink: /ai-disclaimer/
   .legal-body a{color:inherit; text-underline-offset:0.25em; text-decoration-color:color-mix(in srgb, var(--ink) 35%, transparent);}
   .legal-body a:hover{color:var(--blue); text-decoration-color:currentColor;}
   .legal-body address{font-style:normal;}
+  .legal-build{grid-column:2 / span 4; font-family:'JetBrains Mono', monospace; font-size:12px; opacity:0.5;}
   @media (max-width: 960px){
     .legal-label{grid-column:1 / -1; padding-top:0; margin-bottom:-48px;}
-    .legal-head, .legal-body{grid-column:1 / -1;}
+    .legal-head, .legal-body, .legal-build{grid-column:1 / -1;}
   }
   @media (max-width: 640px){
     .legal{padding-top:64px; padding-bottom:88px; row-gap:56px;}
@@ -84,30 +85,31 @@ permalink: /ai-disclaimer/
       <h1>How this site was made</h1>
     </div>
 
-    <p class="legal-label" id="mine">mine</p>
+    <p class="legal-label" id="idea">idea</p>
     <section class="legal-body">
-      <h2>My part</h2>
-      <ul>
-        <li>The concept and the layout: a one-pager whose project pages slide in, built on a fixed grid. I had it in my head before a single line of code existed.</li>
-        <li>The visual direction, typography and colour.</li>
-        <li>Which projects are shown and in what order.</li>
-        <li>Every text on the site. I wrote them myself.</li>
-      </ul>
+      <h2>Concept &amp; design</h2>
+      <p>The concept and the layout: a one-pager on a fixed grid, with project pages that slide in. I had it in my head before a single line of code existed. The visual direction, typography and colour, and which projects are shown and in what order, are mine too.</p>
     </section>
 
-    <p class="legal-label" id="tool">tool</p>
+    <p class="legal-label" id="words">words</p>
     <section class="legal-body">
-      <h2>Claude Code</h2>
-      <p>I used Claude Code to build the site from that idea: structuring the pages and sections, writing the Eleventy templates, CSS and JavaScript, image compression and the build setup. I described what I wanted, reviewed every change in the browser and kept only what fit.</p>
-      <p>I also had Claude look over my texts and suggest wording in some places. I reviewed and approved every change, which makes the final text my own words.</p>
+      <h2>Texts</h2>
+      <p>I wrote every text on this site myself. Claude read them afterwards as a proofreader: it pointed out typos, clumsy sentences and unclear passages, and sometimes suggested a different wording. What it says and how it sounds is mine.</p>
+    </section>
+
+    <p class="legal-label" id="code">code</p>
+    <section class="legal-body">
+      <h2>Built with Claude Code</h2>
+      <p>I used Claude Code to turn the idea into a working site: page structure, Eleventy templates, CSS and JavaScript, image compression and the build setup. I described what I wanted, checked the result in the browser and changed it until it matched what I had in mind.</p>
     </section>
 
     <p class="legal-label" id="projects">projects</p>
     <section class="legal-body">
-      <h2>In my projects</h2>
-      <p>I use AI as a tool to build, not to think. Where a project used AI, its case study will say so and explain how.</p>
-      <p>Last build: {{ site.built }}</p>
+      <h2>In my work</h2>
+      <p>In my design work, AI is a tool for building and refining, not a replacement for ideas. Where a project used AI, its case study says so and explains how.</p>
     </section>
+
+    <p class="legal-build">Last build: {{ site.built }}</p>
   </div>
   </main>
 
