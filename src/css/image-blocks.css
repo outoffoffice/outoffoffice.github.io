@@ -27,7 +27,7 @@
 .image-block.portrait .ph{aspect-ratio:4/5;}
 
 /* natural: the image's own proportions, nothing cropped */
-.image-block.natural .ph-grid{max-width:640px; margin:0 auto;}
+.image-block.natural .ph-grid{max-width:640px;}  /* left-aligned with the text */
 .image-block.natural .ph{aspect-ratio:auto;}
 .image-block.natural .ph img{position:static; height:auto; display:block;}
 

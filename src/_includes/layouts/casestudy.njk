@@ -104,7 +104,7 @@
   </section>
 
   {% if heroImage %}
-  <div class="hero-image">
+  <div class="hero-image{% if heroFit == 'natural' %} natural{% endif %}">
     <span><img src="{{ heroImage | contentImage }}" alt="{{ heroImageAlt or title }}" sizes="(max-width: 640px) 100vw, 960px"></span>
   </div>
   {% endif %}

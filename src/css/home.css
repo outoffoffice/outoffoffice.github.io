@@ -181,11 +181,13 @@ h1 .mark-scramble{position:absolute; inset:0; visibility:hidden; white-space:now
 /* each image keeps its own proportions (a poster stays tall, a screen
    wide), which loosens the gallery's rhythm; a tile without an image
    falls back to a 4:3 placeholder */
-.project-img{
-  overflow:hidden;
+.project-img{overflow:hidden;}
+/* the placeholder tint only when there's no image, so it never shows
+   through an image's transparent edges or corners */
+.project-img:not(:has(img)){
+  aspect-ratio:4/3;
   background:color-mix(in srgb, var(--ink) 8%, transparent);
 }
-.project-img:not(:has(img)){aspect-ratio:4/3;}
 .project-img img{width:100%; height:auto; display:block;}
 
 /* contact sheet: under each frame its number, hanging in the sub-line

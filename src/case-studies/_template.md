@@ -35,6 +35,7 @@ facts:
 # ── images (paths inside content/) ──
 heroImage: my-project/hero.png    # big image under the head, also the tile
 heroImageAlt: What the image shows, in a sentence
+# heroFit: natural               # hero in its own proportions instead of cropped to 16:9
 # cardImage: my-project/tile.png  # only if there's no hero image
 ---
 
