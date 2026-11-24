@@ -35,6 +35,20 @@
 .image-block.posters .ph-grid{grid-template-columns:repeat(3, 1fr);}
 .image-block.posters .ph{aspect-ratio:210/297;}
 
+/* wide: full width, the image's own proportions, nothing cropped */
+.image-block.wide .ph{aspect-ratio:auto;}
+.image-block.wide .ph img{position:static; height:auto; display:block;}
+
+/* screens: same-format screenshots, uncropped, two or three across */
+.image-block.screens-2 .ph-grid{grid-template-columns:1fr 1fr; align-items:start;}
+.image-block.screens-3 .ph-grid{grid-template-columns:repeat(3, 1fr); align-items:start;}
+.image-block[class*="screens-"] .ph{aspect-ratio:auto;}
+.image-block[class*="screens-"] .ph img{position:static; height:auto; display:block;}
+
+/* the placeholder gradient only while there's no image, so it never shows
+   through an image's transparent edges or corners */
+.image-block .ph:has(img){background:none;}
+
 .image-block .ph-label{
   font-family:'JetBrains Mono', monospace;
   font-size:11px;
@@ -63,4 +77,5 @@
   .image-block.pair .ph-grid,
   .image-block.trio .ph-grid{grid-template-columns:1fr;}
   .image-block.posters .ph-grid{grid-template-columns:1fr 1fr;}
+  .image-block.screens-3 .ph-grid{grid-template-columns:1fr 1fr;}
 }

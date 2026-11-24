@@ -26,6 +26,9 @@ const SIZES = {
   pair: "(max-width: 560px) 100vw, 390px",
   trio: "(max-width: 560px) 100vw, 260px",
   posters: "(max-width: 720px) 50vw, 260px",
+  wide: "(max-width: 640px) 100vw, 780px",
+  "screens-2": "(max-width: 560px) 50vw, 390px",
+  "screens-3": "(max-width: 560px) 50vw, 260px",
 };
 
 function fileExists(relPath) {
@@ -120,6 +123,23 @@ module.exports = async function (eleventyConfig) {
   // images (posters, prints) in an uncropped grid: three across, two on phones
   eleventyConfig.addShortcode("imagePosters", function (...srcs) {
     return renderBlock("posters", srcs.map((src) => ({ src })));
+  });
+
+  // {% imageWide "pfad.png", "Bildunterschrift" %} — one image, full width,
+  // in its own proportions, uncropped (where imageSingle crops to 16:9)
+  eleventyConfig.addShortcode("imageWide", function (src, caption) {
+    return renderBlock("wide", [{ src, alt: caption }], caption);
+  });
+
+  // {% imageScreens "a.png", "b.png", …, "Bildunterschrift" %} — screens of
+  // the same format (app or device screenshots) in an uncropped grid: two
+  // or four images two across, otherwise three across (two on phones). A
+  // last argument that isn't an image file is the caption (optional).
+  eleventyConfig.addShortcode("imageScreens", function (...args) {
+    const isImage = (s) => /\.(png|jpe?g|webp|gif|avif)$/i.test(s);
+    const caption = args.length && !isImage(args[args.length - 1]) ? args.pop() : "";
+    const variant = args.length === 2 || args.length === 4 ? "screens-2" : "screens-3";
+    return renderBlock(variant, args.map((src) => ({ src })), caption);
   });
 
   // Case-study facts: a list in the front matter, or a string split on

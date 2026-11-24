@@ -49,3 +49,5 @@ Text in Markdown. **Bold**, *italic*, [links](https://…).
 {% imagePortrait "my-project/tall.png", "Caption" %}
 {% imageNatural "my-project/square.png", "Caption" %}
 {% imagePosters "my-project/01.png", "my-project/02.png", "my-project/03.png" %}
+{% imageWide "my-project/wide.png", "Caption" %}
+{% imageScreens "my-project/s1.png", "my-project/s2.png", "my-project/s3.png", "Caption (optional)" %}
