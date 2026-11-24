@@ -11,8 +11,7 @@ stack: Claude / Figma
 links:
   - { label: "Moofigotchi on GitHub", url: "https://github.com/outoffoffice/moofigotchi" }
 heroImage: moofgotchi/25-background-waves.png
-heroFit: natural                 # show the hero uncropped
-heroImageAlt: The Moofigotchi device, a dark handheld with an olive LCD screen showing Moof the dogcow in pixel art in front of a wavy background
+heroImageAlt: The Moofigotchi device, a dark handheld with an olive LCD screen showing Moof the dogcow in pixel art in front of a wavy landscape, on a grey background
 ---
 
 In this short case study I wanted to go through a creative process, focusing on how and when I use generative AI as a tool, and to sum up a kind of flow that makes it a conscious use of the tool. Here are my key takeaways. To make comparison easier, I will refer to the process without AI as the "non-AI process". One thing stays the same either way: before you start, you should already have an idea of what you want, however detailed or low-resolution it is.
@@ -56,8 +55,6 @@ Now it was time to move towards the intended app format. In my case I rolled the
 Now I took the result into Figma and started building it myself, manually drawing some assets I already had in mind, but augmenting them by generating alternate versions.
 
 {% imageTrio "moofgotchi/figma-work-1.png", "moofgotchi/figma-work-2.png", "moofgotchi/figma-work-3.png" %}
-
-{% imageWide "moofgotchi/Figma.png", "The Figma file: LCD screen, backgrounds, clouds, trees and the printer-doghouse" %}
 
 I felt this step was a crucial one: to rework every detail of the design. *This way it started to feel more genuinely like a craft instead of just accepting a generated result.* Using both manual work and amplifying it with an agent helped me focus on the creative part, both conceptually and in fine visual detail work.
 
